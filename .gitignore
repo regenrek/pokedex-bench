@@ -102,3 +102,15 @@
 **/.codex/
 
 !/assets/workflow.jpg
+
+!/pokedex-luna-astra/
+/pokedex-luna-astra/*
+!/pokedex-luna-astra/src/
+!/pokedex-luna-astra/index.html
+!/pokedex-luna-astra/package.json
+!/pokedex-luna-astra/package-lock.json
+!/pokedex-luna-astra/tsconfig.json
+!/pokedex-luna-astra/vite.config.ts
+!/pokedex-luna-astra/vitest.config.ts
+!/assets/luna-astra-desktop.png
+!/assets/luna-astra-mobile.png
