@@ -1,0 +1,57 @@
+/* ------------------------------------------------------------------ *
+ * Design tokens — colours sampled directly from the reference artwork.
+ * ------------------------------------------------------------------ */
+
+:root {
+  /* Casing plastic */
+  --red-lit: #dd3a33;
+  --red-hi: #cf332c;
+  --red: #c22a24;
+  --red-mid: #b3241f;
+  --red-lo: #a01d19;
+  --red-dark: #7d1410;
+  --red-deep: #5c0d09;
+  --seam: rgba(74, 8, 5, 0.55);
+
+  /* Coordinate accents */
+  --amber: #eba124;
+  --amber-hi: #fce195;
+  --amber-lo: #b8760f;
+  --key-blue: #2b86c8;
+  --key-blue-hi: #4aa8e4;
+  --key-blue-lo: #0f5b93;
+  --charcoal: #333435;
+  --charcoal-hi: #4a4c4e;
+  --charcoal-lo: #131314;
+
+  /* Hardware */
+  --steel: #e8e3dd;
+  --steel-mid: #d3cec8;
+  --steel-lo: #b3aca4;
+  --steel-edge: #7c736c;
+
+  /* LCD */
+  --lcd: #b8d9c5;
+  --lcd-hi: #c9e4d3;
+  --lcd-lo: #9dc3ac;
+  --lcd-ink: #22322c;
+  --lcd-ink-soft: #3d5148;
+  --lcd-ink-faint: rgba(34, 50, 44, 0.42);
+  --lcd-tab-active: #7ca090;
+  --lcd-line: rgba(34, 50, 44, 0.28);
+
+  /* Lamps */
+  --lamp-red: #e8402f;
+  --lamp-amber: #f2a51f;
+  --lamp-green: #4fc23f;
+
+  /* Page */
+  --page: #f6f4f1;
+  --page-edge: #e2ded8;
+
+  /* Typography */
+  --font-lcd: 'VT323', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-case: 'Helvetica Neue', Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
+
+  color-scheme: light;
+}

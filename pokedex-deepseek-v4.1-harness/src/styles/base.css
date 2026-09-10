@@ -1,0 +1,107 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-case);
+  color: #2a2724;
+  background-color: var(--page);
+  background-image:
+    radial-gradient(120% 90% at 50% -10%, #ffffff 0%, rgba(255, 255, 255, 0) 55%),
+    radial-gradient(90% 70% at 50% 115%, #ded9d2 0%, rgba(222, 217, 210, 0) 60%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid #2f6fb5;
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1.5rem 2rem;
+  gap: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Keyboard affordance legend below the device. */
+.app__hints {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 1.4rem;
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8d867e;
+}
+
+.app__hints span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+}
+
+.app__hints kbd {
+  font-family: var(--font-case);
+  font-size: 0.94em;
+  line-height: 1;
+  padding: 0.22em 0.42em;
+  border-radius: 0.28em;
+  color: #6a635c;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px #d9d3cb,
+    0 1px 0 #cfc8c0;
+}

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Pokédex">
+  <defs>
+    <linearGradient id="case" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dd3a33" />
+      <stop offset="0.45" stop-color="#c22a24" />
+      <stop offset="1" stop-color="#9d1c17" />
+    </linearGradient>
+    <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7f3ee" />
+      <stop offset="1" stop-color="#c3bcb3" />
+    </linearGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9e4d3" />
+      <stop offset="1" stop-color="#9dc3ac" />
+    </linearGradient>
+    <radialGradient id="lens" cx="0.35" cy="0.28" r="0.8">
+      <stop offset="0" stop-color="#d6efff" />
+      <stop offset="0.25" stop-color="#4aa8e4" />
+      <stop offset="0.7" stop-color="#0f62b4" />
+      <stop offset="1" stop-color="#062a56" />
+    </radialGradient>
+  </defs>
+
+  <rect x="4" y="4" width="56" height="56" rx="10" fill="url(#case)" />
+  <rect x="4" y="4" width="56" height="56" rx="10" fill="none" stroke="#7d1410" stroke-width="2" />
+  <path d="M4 14 L14 4 H4 Z" fill="#f6f4f1" />
+
+  <rect x="29.4" y="8" width="5.2" height="48" rx="2.6" fill="#7d1410" />
+  <rect x="30.6" y="8" width="1.6" height="48" rx="0.8" fill="#c02a22" />
+
+  <circle cx="16" cy="15" r="7" fill="#8d1510" />
+  <circle cx="16" cy="15" r="5.2" fill="url(#lens)" />
+  <ellipse cx="14.2" cy="12.8" rx="2.1" ry="1.4" fill="#ffffff" opacity="0.85" transform="rotate(-20 14.2 12.8)" />
+
+  <rect x="8.5" y="26" width="17" height="15" rx="2.4" fill="url(#lid)" />
+  <rect x="10.6" y="28.1" width="12.8" height="10.8" rx="1.2" fill="url(#screen)" />
+  <rect x="12.4" y="30.6" width="9" height="1.6" rx="0.8" fill="#22322c" opacity="0.75" />
+  <rect x="12.4" y="33.4" width="6.4" height="1.6" rx="0.8" fill="#22322c" opacity="0.55" />
+  <rect x="12.4" y="36.2" width="7.8" height="1.6" rx="0.8" fill="#22322c" opacity="0.4" />
+
+  <rect x="8" y="45" width="8" height="8" rx="1.6" fill="#333435" />
+  <rect x="10.8" y="42.2" width="2.4" height="13.6" rx="1.2" fill="#333435" />
+
+  <rect x="35" y="26" width="21" height="15" rx="2.4" fill="url(#lid)" />
+  <rect x="37" y="28.1" width="17" height="10.8" rx="1.2" fill="url(#screen)" />
+  <rect x="38.6" y="30" width="12.8" height="1.5" rx="0.75" fill="#22322c" opacity="0.7" />
+  <rect x="38.6" y="32.6" width="10" height="1.5" rx="0.75" fill="#22322c" opacity="0.5" />
+  <rect x="38.6" y="35.2" width="11.4" height="1.5" rx="0.75" fill="#22322c" opacity="0.35" />
+
+  <rect x="35" y="44" width="6" height="4" rx="1.2" fill="#2b86c8" />
+  <rect x="42.5" y="44" width="6" height="4" rx="1.2" fill="#2b86c8" />
+  <rect x="50" y="44" width="6" height="4" rx="1.2" fill="#2b86c8" />
+  <rect x="35" y="50" width="6" height="4" rx="1.2" fill="#2b86c8" />
+  <rect x="42.5" y="50" width="6" height="4" rx="1.2" fill="#2b86c8" />
+  <circle cx="53" cy="52" r="4" fill="#232527" />
+</svg>

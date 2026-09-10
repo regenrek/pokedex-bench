@@ -1,0 +1,780 @@
+/* ============================================================================
+   LCDs: green screens, sprite framing, panels, stat bars, index list.
+   ========================================================================== */
+
+.lcd {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 10px 12px 8px;
+  overflow: hidden;
+  border-radius: 7px;
+  color: var(--lcd-ink);
+  font-family: var(--mono);
+  background-color: var(--lcd-green);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(30, 52, 26, 0.045) 0 1px,
+      rgba(255, 255, 255, 0) 1px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(30, 52, 26, 0.028) 0 1px,
+      rgba(255, 255, 255, 0) 1px 5px
+    ),
+    radial-gradient(120% 92% at 16% -6%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 58%),
+    linear-gradient(168deg, #b6d2a7 0%, var(--lcd-green) 52%, #9ab98a 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(24, 44, 22, 0.45),
+    inset 0 10px 26px rgba(18, 38, 18, 0.18),
+    inset 0 -6px 18px rgba(18, 38, 18, 0.1);
+}
+
+/* Restrained scan sweep + glass glare. Both stay light enough that the dark
+   LCD typography always dominates. */
+.lcd::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 40%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: lcd-sweep 7.5s linear infinite;
+}
+
+.lcd::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    114deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.04) 24%,
+    rgba(255, 255, 255, 0) 42%
+  );
+}
+
+@keyframes lcd-sweep {
+  from { transform: translateY(-110%); }
+  to { transform: translateY(320%); }
+}
+
+/* ------------------------------------------------------------- main LCD -- */
+
+.lcd--main {
+  flex: 1 1 auto;
+}
+
+.lcd__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--lcd-line);
+}
+
+.lcd__dexno {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.lcd__headnote {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lcd-ink-soft);
+  text-align: right;
+}
+
+.lcd__body {
+  display: grid;
+  /* Wide sprite bay: the API canvas is mostly transparent margin, so the bay
+     has to be generous for the artwork to read at screenshot scale. */
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 10px 0;
+}
+
+/* --------------------------------------------------------- sprite frame -- */
+
+.sprite-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  width: 260px;
+  height: 260px;
+  /* The enlarged sprite is allowed past the frame lip instead of being cut. */
+  overflow: visible;
+  border-radius: 5px;
+  background:
+    radial-gradient(54% 54% at 50% 42%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 74%),
+    rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 0 0 1px rgba(30, 50, 25, 0.3),
+    inset 0 0 22px rgba(24, 44, 20, 0.14);
+}
+
+/* Center the transparent API canvas independently of grid track sizing.
+   The canvas may extend beyond the bay, but its visible pixels fit the LCD. */
+.sprite-frame__img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  width: var(--sprite-size, 300px);
+  height: var(--sprite-size, 300px);
+  max-width: none;
+  pointer-events: none;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 0 rgba(30, 50, 25, 0.14));
+}
+
+.sprite-frame__missing {
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--lcd-ink-soft);
+}
+
+/* Corner ticks around the sprite viewport. */
+.sprite-frame::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--lcd-ink), var(--lcd-ink)) left top / 12px 2px no-repeat,
+    linear-gradient(var(--lcd-ink), var(--lcd-ink)) left top / 2px 12px no-repeat,
+    linear-gradient(var(--lcd-ink), var(--lcd-ink)) right top / 12px 2px no-repeat,
+    linear-gradient(var(--lcd-ink), var(--lcd-ink)) right top / 2px 12px no-repeat,
+    linear-gradient(var(--lcd-ink), var(--lcd-ink)) left bottom / 12px 2px no-repeat,
+    linear-gradient(var(--lcd-ink), var(--lcd-ink)) left bottom / 2px 12px no-repeat,
+    linear-gradient(var(--lcd-ink), var(--lcd-ink)) right bottom / 12px 2px no-repeat,
+    linear-gradient(var(--lcd-ink), var(--lcd-ink)) right bottom / 2px 12px no-repeat;
+  opacity: 0.5;
+}
+
+/* ---------------------------------------------------------------- facts -- */
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding-left: 12px;
+}
+
+.facts__name {
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.facts__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.type-chip {
+  padding: 3px 9px;
+  border: 1px solid var(--lcd-line);
+  border-radius: 3px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.type-chip--empty {
+  opacity: 0.7;
+}
+
+.facts__list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.facts__row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.facts__row dt {
+  width: 56px;
+  flex: 0 0 auto;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--lcd-ink-soft);
+}
+
+.facts__rarity {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.facts__row dd {
+  font-size: 14px;
+  letter-spacing: 0.03em;
+}
+
+/* --------------------------------------------------------- status strip -- */
+
+.lcd__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--lcd-line);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.lcd__status-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #2f4a26;
+}
+
+.lcd__status--busy .lcd__status-dot {
+  background: #a2761a;
+  animation: lcd-blink 1s steps(2, end) infinite;
+}
+
+.lcd__status--fault .lcd__status-dot {
+  background: #9c2318;
+  animation: lcd-blink 0.6s steps(2, end) infinite;
+}
+
+.lcd__status-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.lcd__status-cache {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  border: 1px solid var(--lcd-line);
+  border-radius: 2px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--lcd-ink-soft);
+}
+
+@keyframes lcd-blink {
+  50% { opacity: 0.25; }
+}
+
+/* ------------------------------------------------------------ fault box -- */
+
+.lcd__fault,
+.panel-fault {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 7px 10px;
+  border: 1px dashed rgba(110, 26, 16, 0.65);
+  border-radius: 4px;
+  background: rgba(150, 40, 24, 0.14);
+  color: #521a11;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.lcd__fault-text,
+.panel-fault p {
+  flex: 1 1 auto;
+  margin: 0;
+}
+
+.lcd__fault-retry {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  border: 1px solid rgba(70, 20, 12, 0.7);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.32);
+  color: #451409;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.lcd__fault-retry:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* ------------------------------------------------------------- skeleton -- */
+
+.skeleton {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+.skeleton--panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.skeleton__sprite {
+  justify-self: center;
+  width: 260px;
+  height: 260px;
+  border-radius: 5px;
+  background: linear-gradient(
+    100deg,
+    rgba(34, 51, 29, 0.12),
+    rgba(34, 51, 29, 0.24),
+    rgba(34, 51, 29, 0.12)
+  );
+  background-size: 220% 100%;
+  animation: lcd-shimmer 1.7s ease-in-out infinite;
+}
+
+.skeleton__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton__line {
+  display: block;
+  height: 11px;
+  border-radius: 2px;
+  background: linear-gradient(
+    100deg,
+    rgba(34, 51, 29, 0.14),
+    rgba(34, 51, 29, 0.28),
+    rgba(34, 51, 29, 0.14)
+  );
+  background-size: 220% 100%;
+  animation: lcd-shimmer 1.7s ease-in-out infinite;
+}
+
+.skeleton__line--title {
+  height: 24px;
+  width: 70%;
+}
+
+.skeleton__line--short {
+  width: 45%;
+}
+
+@keyframes lcd-shimmer {
+  from { background-position: 120% 0; }
+  to { background-position: -60% 0; }
+}
+
+/* ------------------------------------------------------------- info LCD -- */
+
+.lcd--info {
+  flex: 1 1 auto;
+  padding: 8px 11px 6px;
+}
+
+.lcd__tabs {
+  display: flex;
+  gap: 6px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--lcd-line);
+}
+
+.lcd__tab {
+  padding: 5px 12px;
+  border: 1px solid var(--lcd-line);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.22);
+  color: var(--lcd-ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.lcd__tab:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.lcd__tab[aria-pressed="true"] {
+  border-color: #2f4a26;
+  background: #2f4a26;
+  color: #dcecd0;
+}
+
+.lcd__panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 2px 6px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(47, 74, 38, 0.55) transparent;
+}
+
+.lcd__panel::-webkit-scrollbar {
+  width: 7px;
+}
+
+.lcd__panel::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgba(47, 74, 38, 0.5);
+}
+
+.lcd__foot {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  padding-top: 6px;
+  border-top: 1px solid var(--lcd-line);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.lcd__foot-note {
+  color: var(--lcd-ink-soft);
+}
+
+.lcd__notice {
+  color: #57190f;
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+}
+
+/* --------------------------------------------------------------- panels -- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.panel__flavor {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+.panel__block {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.panel__label {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--lcd-ink-soft);
+}
+
+.panel__footnote,
+.panel__empty {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--lcd-ink-soft);
+}
+
+/* Partial species record: the warning carries its own local retry. */
+.panel__warning {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 9px;
+  border: 1px dashed rgba(110, 26, 16, 0.6);
+  border-radius: 4px;
+  background: rgba(150, 40, 24, 0.12);
+  color: #6b2410;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+}
+
+.panel__warning-text {
+  flex: 1 1 12ch;
+  min-width: 0;
+}
+
+.ability-list,
+.measure-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ability {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ability__name {
+  letter-spacing: 0.03em;
+}
+
+.ability__tag {
+  padding: 1px 5px;
+  border: 1px solid var(--lcd-line);
+  border-radius: 2px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--lcd-ink-soft);
+}
+
+.ability--empty {
+  color: var(--lcd-ink-soft);
+}
+
+.measure {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.measure dt {
+  width: 66px;
+  flex: 0 0 auto;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--lcd-ink-soft);
+}
+
+.measure dd {
+  font-size: 14px;
+}
+
+/* ----------------------------------------------------------- stat bars -- */
+
+.stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.stat__label {
+  width: 38px;
+  flex: 0 0 auto;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--lcd-ink-soft);
+}
+
+.stat__track {
+  position: relative;
+  flex: 1 1 auto;
+  height: 12px;
+  border: 1px solid var(--lcd-line);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+}
+
+.stat__fill {
+  display: block;
+  height: 100%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #2f4a26 0 4px,
+      rgba(47, 74, 38, 0) 4px 6px
+    );
+}
+
+.stat__value {
+  width: 34px;
+  flex: 0 0 auto;
+  font-size: 13px;
+  text-align: right;
+}
+
+/* -------------------------------------------------------------- index -- */
+
+.index-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.index-item {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  width: 100%;
+  padding: 4px 8px;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  text-align: left;
+}
+
+.index-item:hover {
+  background: rgba(47, 74, 38, 0.16);
+}
+
+.index-item[aria-current="true"] {
+  border-left-color: #24391d;
+  background: #2f4a26;
+  color: #e2f0d4;
+  font-weight: 700;
+}
+
+.index-item__no {
+  flex: 0 0 auto;
+  opacity: 0.85;
+}
+
+.index-item__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================== phone view == */
+
+@media (max-width: 1120px) {
+  .lcd {
+    padding: 9px 10px 8px;
+  }
+
+  .lcd--main {
+    min-height: 530px;
+  }
+
+  .lcd__body {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 12px;
+  }
+
+  /* Slightly smaller bay, same sprite-scale policy: the artwork still reads
+     large and the widest Kanto sprites stay inside the screen. */
+  .sprite-frame,
+  .skeleton__sprite {
+    width: 260px;
+    height: 260px;
+    --sprite-size: 280px;
+  }
+
+  .facts {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .facts__types {
+    justify-content: center;
+  }
+
+  .facts__row {
+    justify-content: center;
+  }
+
+  .facts__row dt {
+    width: auto;
+  }
+
+  .lcd--info {
+    min-height: 320px;
+  }
+
+  .skeleton {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  .lcd__tab {
+    padding: 9px 14px;
+  }
+
+  .index-item {
+    padding: 9px 8px;
+    font-size: 13px;
+  }
+
+  .lcd__fault-retry {
+    padding: 8px 12px;
+  }
+}
+
+/* --------------------------------------------------------- empty screen -- */
+
+.empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 200px;
+  padding: 18px;
+  border: 1px dashed var(--lcd-line);
+  border-radius: 5px;
+  text-align: center;
+}
+
+.empty-state__title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--lcd-ink);
+}
+
+.empty-state__hint {
+  max-width: 30ch;
+  font-size: 13px;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  color: var(--lcd-ink-soft);
+}

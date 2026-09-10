@@ -1,0 +1,955 @@
+/* ------------------------------------------------------------------ *
+ * LCD screens — restrained retro electronic readouts.
+ * ------------------------------------------------------------------ */
+
+.lcd {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  border-radius: 0.45em;
+  overflow: hidden;
+  font-family: var(--font-lcd);
+  font-size: 1.16em;
+  line-height: 1.12;
+  color: var(--lcd-ink);
+  background:
+    radial-gradient(120% 90% at 26% -6%, var(--lcd-hi) 0%, rgba(201, 228, 211, 0) 58%),
+    linear-gradient(168deg, var(--lcd) 0%, #b1d4be 58%, var(--lcd-lo) 100%);
+  box-shadow:
+    inset 0 0.14em 0.34em rgba(18, 58, 42, 0.4),
+    inset 0 -0.1em 0 rgba(255, 255, 255, 0.45),
+    0 0 0 0.07em rgba(96, 88, 78, 0.6);
+}
+
+.lcd::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(24, 62, 46, 0.09) 0 0.06em,
+    rgba(24, 62, 46, 0) 0.06em 0.17em
+  );
+}
+
+.lcd::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  background: linear-gradient(
+    156deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.14) 20%,
+    rgba(255, 255, 255, 0) 44%
+  );
+}
+
+.lcd__body {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.view {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ------------------------------ header --------------------------- */
+
+.lcd__head {
+  flex: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.7em;
+  padding: 0.34em 0.7em 0.26em;
+  font-size: 1.32em;
+  letter-spacing: 0.07em;
+  border-bottom: 0.1em solid var(--lcd-line);
+}
+
+.lcd__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  letter-spacing: 0.14em;
+}
+
+.lcd__id,
+.lcd__title {
+  white-space: nowrap;
+}
+
+.lcd__head-right {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  flex: none;
+}
+
+.lcd__title {
+  letter-spacing: 0.13em;
+}
+
+.lcd-chip {
+  font-size: 0.6em;
+  letter-spacing: 0.16em;
+  padding: 0.1em 0.45em;
+  border: 0.12em solid var(--lcd-ink-faint);
+  border-radius: 0.2em;
+  color: var(--lcd-ink-soft);
+  white-space: nowrap;
+}
+
+.lcd-chip--live {
+  border-color: var(--lcd-ink);
+  color: var(--lcd-ink);
+}
+
+/* --------------------------- species view ------------------------ */
+
+.species__main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+  gap: 0.7em;
+  padding: 0.65em 0.75em 0.45em;
+}
+
+.sprite-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  overflow: hidden;
+  border: 0.11em solid var(--lcd-line);
+  border-radius: 0.22em;
+  background-image:
+    linear-gradient(rgba(34, 50, 44, 0.09) 0.08em, rgba(34, 50, 44, 0) 0.08em),
+    linear-gradient(90deg, rgba(34, 50, 44, 0.09) 0.08em, rgba(34, 50, 44, 0) 0.08em);
+  background-size: 1.5em 1.5em;
+}
+
+.sprite-stage__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22%;
+  top: -25%;
+  background: linear-gradient(180deg, rgba(34, 50, 44, 0) 0%, rgba(34, 50, 44, 0.14) 50%, rgba(34, 50, 44, 0) 100%);
+  animation: sprite-scan 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sprite-scan {
+  0%,
+  100% {
+    top: -25%;
+  }
+  50% {
+    top: 100%;
+  }
+}
+
+/* `object-fit: contain` inside a full-bleed box is what actually scales the
+   sprite: a percentage height on a grid item resolves against an indefinite
+   row, so it cannot be relied on here. */
+.sprite-stage img {
+  position: absolute;
+  left: 7%;
+  top: 7%;
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transform: scale(var(--sprite-zoom, 1.5));
+  filter: grayscale(1) brightness(0.5) contrast(1.75);
+  mix-blend-mode: multiply;
+  opacity: 0.96;
+  transition: opacity 180ms ease;
+}
+
+.sprite-stage__caption {
+  position: absolute;
+  left: 0.4em;
+  bottom: 0.25em;
+  font-size: 0.78em;
+  letter-spacing: 0.16em;
+  color: var(--lcd-ink-faint);
+}
+
+.sprite-placeholder {
+  width: 60%;
+  height: 60%;
+  display: grid;
+  place-items: center;
+  border: 0.12em dashed var(--lcd-ink-faint);
+  border-radius: 0.2em;
+  font-size: 0.9em;
+  letter-spacing: 0.14em;
+  color: var(--lcd-ink-faint);
+}
+
+/* stat bars */
+.stat-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4em;
+  min-width: 0;
+  min-height: 0;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 2.9em minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1.06em;
+  letter-spacing: 0.04em;
+}
+
+.stat-bar {
+  display: flex;
+  gap: 0.09em;
+  height: 1.05em;
+  padding: 0.11em;
+  border: 0.11em solid var(--lcd-ink);
+  border-radius: 0.14em;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.stat-seg {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 0.04em;
+  background: rgba(34, 50, 44, 0.13);
+  transition: background-color 220ms ease;
+}
+
+.stat-seg--on {
+  background: var(--lcd-ink);
+}
+
+/* footer fields */
+.species__foot {
+  flex: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.14fr);
+  gap: 0.7em;
+  padding: 0.5em 0.75em 0.65em;
+  border-top: 0.1em solid var(--lcd-line);
+}
+
+.field-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22em;
+  font-size: 1.02em;
+  letter-spacing: 0.03em;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 4.4em minmax(0, 1fr);
+  gap: 0.4em;
+  align-items: center;
+}
+
+.field__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field__value--dim {
+  color: var(--lcd-ink-faint);
+}
+
+.field__value--wrap {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.06;
+}
+
+.type-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28em;
+}
+
+.type-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32em;
+  padding: 0 0.38em;
+  border: 0.11em solid var(--lcd-ink);
+  border-radius: 0.16em;
+  font-size: 0.98em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.type-chip__swatch {
+  width: 0.6em;
+  height: 0.6em;
+  border: 0.1em solid rgba(18, 30, 24, 0.6);
+  background: var(--chip-color, var(--lcd-ink-soft));
+}
+
+.flavor {
+  border: 0.11em solid var(--lcd-line);
+  border-radius: 0.2em;
+  padding: 0.3em 0.5em;
+  font-size: 1.02em;
+  letter-spacing: 0.02em;
+  overflow: auto;
+  min-height: 0;
+  color: var(--lcd-ink-soft);
+}
+
+.flavor strong {
+  color: var(--lcd-ink);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+/* ---------------------------- stats view ------------------------- */
+
+.stats__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12.5em;
+  gap: 0.7em;
+  padding: 0.6em 0.75em 0.7em;
+}
+
+.stats__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.34em;
+  min-width: 0;
+  overflow: auto;
+}
+
+.stat-big {
+  display: grid;
+  grid-template-columns: 3.1em minmax(0, 1fr) 2.4em;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 1.1em;
+  letter-spacing: 0.05em;
+}
+
+.stat-big__value {
+  text-align: right;
+}
+
+.stat-big--total {
+  margin-top: 0.2em;
+  padding-top: 0.3em;
+  border-top: 0.1em solid var(--lcd-line);
+  font-size: 1.18em;
+}
+
+.stats__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  min-width: 0;
+  border-left: 0.1em solid var(--lcd-line);
+  padding-left: 0.65em;
+}
+
+.stats-portrait {
+  display: grid;
+  place-items: center;
+  border: 0.11em solid var(--lcd-line);
+  border-radius: 0.2em;
+  padding: 0.25em;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.stats-portrait img {
+  width: 5.6em;
+  height: 5.6em;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transform: scale(var(--sprite-zoom, 1.5));
+}
+
+.mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22em;
+  font-size: 1em;
+  letter-spacing: 0.03em;
+}
+
+.mini-list__row {
+  display: grid;
+  grid-template-columns: 5.6em minmax(0, 1fr);
+  gap: 0.35em;
+}
+
+.mini-list__row span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.section-label {
+  font-size: 0.92em;
+  letter-spacing: 0.2em;
+  color: var(--lcd-ink-faint);
+  border-bottom: 0.1em solid var(--lcd-line);
+  padding-bottom: 0.1em;
+}
+
+/* ---------------------------- index view ------------------------- */
+
+.index__search {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.45em 0.7em;
+  border-bottom: 0.1em solid var(--lcd-line);
+}
+
+.index__label {
+  font-size: 1.05em;
+  letter-spacing: 0.14em;
+  color: var(--lcd-ink-soft);
+}
+
+.index__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-lcd);
+  font-size: 1.15em;
+  letter-spacing: 0.06em;
+  color: var(--lcd-ink);
+  background: rgba(255, 255, 255, 0.4);
+  border: 0.11em solid var(--lcd-ink);
+  border-radius: 0.18em;
+  padding: 0.12em 0.4em;
+}
+
+.index__input::placeholder {
+  color: var(--lcd-ink-faint);
+}
+
+.index__clear {
+  font-size: 0.95em;
+  letter-spacing: 0.1em;
+  padding: 0.01em 0.45em;
+  border: 0.11em solid var(--lcd-ink-faint);
+  border-radius: 0.18em;
+  color: var(--lcd-ink-soft);
+}
+
+.index__clear:hover {
+  border-color: var(--lcd-ink);
+  color: var(--lcd-ink);
+}
+
+.index__notice {
+  flex: none;
+  padding: 0.2em 0.75em;
+  font-size: 1em;
+  letter-spacing: 0.08em;
+  color: var(--lcd-ink);
+  background: rgba(34, 50, 44, 0.12);
+  border-bottom: 0.1em solid var(--lcd-line);
+}
+
+.index__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.25em 0.45em 0.5em;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lcd-ink-faint) transparent;
+}
+
+.index__list::-webkit-scrollbar {
+  width: 0.55em;
+}
+
+.index__list::-webkit-scrollbar-thumb {
+  background: rgba(34, 50, 44, 0.35);
+  border-radius: 0.3em;
+}
+
+.index__row {
+  display: grid;
+  grid-template-columns: 3.2em minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5em;
+  width: 100%;
+  text-align: left;
+  padding: 0.06em 0.45em;
+  border-radius: 0.15em;
+  font-size: 1.09em;
+  letter-spacing: 0.05em;
+  color: var(--lcd-ink);
+}
+
+.index__row:hover {
+  background: rgba(34, 50, 44, 0.14);
+}
+
+.index__row--active,
+.index__row--active:hover {
+  background: var(--lcd-ink);
+  color: var(--lcd-hi);
+}
+
+.index__row-genus {
+  font-size: 0.84em;
+  color: var(--lcd-ink-faint);
+  white-space: nowrap;
+}
+
+.index__row--active .index__row-genus {
+  color: rgba(201, 228, 211, 0.7);
+}
+
+.index__empty {
+  padding: 1.2em 0.9em;
+  text-align: center;
+  font-size: 1.1em;
+  letter-spacing: 0.1em;
+  color: var(--lcd-ink-soft);
+}
+
+.index__hint {
+  flex: none;
+  border-top: 0.1em solid var(--lcd-line);
+  padding: 0.2em 0.75em;
+  font-size: 0.92em;
+  letter-spacing: 0.12em;
+  color: var(--lcd-ink-faint);
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+/* ------------------------- right-hand panel ---------------------- */
+
+.area {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.area__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+  padding: 0.24em 0.55em 0.2em;
+  font-size: 1.16em;
+  letter-spacing: 0.1em;
+  border-bottom: 0.1em solid var(--lcd-line);
+}
+
+.range-meter {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.18em;
+  height: 1.5em;
+}
+
+.range-meter__bar {
+  width: 0.46em;
+  background: rgba(34, 50, 44, 0.18);
+  border-radius: 0.05em;
+}
+
+.range-meter__bar--on {
+  background: var(--lcd-ink);
+}
+
+.area__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.area__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.45em 0.55em 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.34em;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lcd-ink-faint) transparent;
+}
+
+.area__content::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.area__content::-webkit-scrollbar-thumb {
+  background: rgba(34, 50, 44, 0.35);
+  border-radius: 0.3em;
+}
+
+.area__tabs {
+  flex: none;
+  width: 8.4em;
+  display: flex;
+  flex-direction: column;
+  padding: 0.28em 0;
+  border-left: 0.1em solid var(--lcd-line);
+}
+
+.tab {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.14em 0.5em;
+  font-family: var(--font-lcd);
+  font-size: 1.08em;
+  letter-spacing: 0.08em;
+  color: var(--lcd-ink);
+  border-left: 0.28em solid transparent;
+}
+
+.tab:hover {
+  background: rgba(34, 50, 44, 0.12);
+}
+
+.tab--active,
+.tab--active:hover {
+  background: var(--lcd-tab-active);
+  border-left-color: var(--lcd-ink);
+  color: #10201a;
+}
+
+.area__dots {
+  flex: none;
+  display: flex;
+  gap: 0.35em;
+  justify-content: center;
+  padding-top: 0.1em;
+}
+
+.area__dot {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  border: 0.1em solid var(--lcd-ink);
+  background: transparent;
+}
+
+.area__dot--on {
+  background: var(--lcd-ink);
+}
+
+.area-map {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 5em;
+  border: 0.11em solid var(--lcd-line);
+  border-radius: 0.2em;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.area-map__land {
+  fill: rgba(34, 50, 44, 0.42);
+  stroke: var(--lcd-ink);
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+}
+
+.area-map__grid {
+  stroke: rgba(34, 50, 44, 0.18);
+  stroke-width: 0.4;
+}
+
+.area-map__marker {
+  fill: var(--lcd-ink);
+}
+
+.area-map__ping {
+  fill: none;
+  stroke: var(--lcd-ink);
+  stroke-width: 0.7;
+  animation: map-ping 2.4s ease-out infinite;
+  transform-origin: center;
+}
+
+@keyframes map-ping {
+  0% {
+    opacity: 0.75;
+    r: 2;
+  }
+  100% {
+    opacity: 0;
+    r: 8;
+  }
+}
+
+.area__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  font-size: 1.04em;
+  letter-spacing: 0.03em;
+}
+
+.area__row {
+  display: grid;
+  grid-template-columns: 5.4em minmax(0, 1fr);
+  gap: 0.4em;
+  align-items: baseline;
+}
+
+.area__row span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.area__note {
+  font-size: 1em;
+  letter-spacing: 0.02em;
+  color: var(--lcd-ink-soft);
+}
+
+.area__badge {
+  align-self: flex-start;
+  font-size: 0.92em;
+  letter-spacing: 0.16em;
+  padding: 0.05em 0.45em;
+  border: 0.11em solid var(--lcd-ink);
+  border-radius: 0.16em;
+}
+
+/* ---------------------------- overlays --------------------------- */
+
+.lcd-overlay {
+  position: absolute;
+  inset: 0;
+  /* Sits under the scanline + sheen layers so full-screen states still read
+     as part of the same LCD rather than a flat panel stuck on top. */
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  padding: 1em;
+  text-align: center;
+  background: linear-gradient(168deg, #c9e4d3, #a8cab5);
+  animation: overlay-in 160ms ease-out;
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lcd-overlay__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  max-width: 26em;
+}
+
+.lcd-overlay__title {
+  font-size: 1.6em;
+  letter-spacing: 0.3em;
+}
+
+.lcd-overlay__text {
+  font-size: 1.1em;
+  letter-spacing: 0.06em;
+  color: var(--lcd-ink-soft);
+}
+
+.progress {
+  width: 16em;
+  height: 1em;
+  border: 0.11em solid var(--lcd-ink);
+  padding: 0.1em;
+  border-radius: 0.14em;
+}
+
+.progress__fill {
+  height: 100%;
+  background: var(--lcd-ink);
+  transition: width 240ms ease;
+}
+
+.boot-log {
+  font-size: 1em;
+  letter-spacing: 0.12em;
+  color: var(--lcd-ink-faint);
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  align-items: center;
+}
+
+/* Refreshing: keep the device visible, dim the outgoing readout. */
+.lcd__body--stale {
+  opacity: 0.42;
+  filter: saturate(0.6);
+  transition: opacity 160ms ease;
+}
+
+.refresh-flag {
+  position: absolute;
+  z-index: 11;
+  left: 50%;
+  bottom: 0.9em;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.1em 0.7em;
+  border-radius: 0.2em;
+  font-size: 1.02em;
+  letter-spacing: 0.16em;
+  color: var(--lcd-hi);
+  background: rgba(34, 50, 44, 0.88);
+  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.28);
+}
+
+.refresh-flag__dot {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--lamp-amber);
+  animation: blink 900ms steps(2, end) infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.15;
+  }
+}
+
+.view-enter {
+  animation: view-in 220ms ease-out;
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.keypad-preview {
+  position: absolute;
+  z-index: 11;
+  left: 0.7em;
+  right: 0.7em;
+  bottom: 0.6em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding: 0.14em 0.6em;
+  font-size: 1.02em;
+  letter-spacing: 0.12em;
+  color: var(--lcd-hi);
+  background: rgba(34, 50, 44, 0.9);
+  border-radius: 0.2em;
+}
+
+/* Non-blocking banner shown when a stale entry stays on screen after a fault. */
+.lcd-notice {
+  position: absolute;
+  z-index: 11;
+  left: 0.7em;
+  right: 0.7em;
+  top: 3.1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding: 0.14em 0.5em 0.14em 0.7em;
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  color: #f6e2c8;
+  background: rgba(112, 38, 24, 0.92);
+  border-radius: 0.2em;
+  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.3);
+}
+
+/* On-screen LCD buttons (retry, confirm). */
+.lcd-button {
+  font-family: var(--font-lcd);
+  font-size: 1.1em;
+  letter-spacing: 0.18em;
+  color: var(--lcd-hi);
+  background: var(--lcd-ink);
+  border-radius: 0.18em;
+  padding: 0.12em 0.9em;
+  box-shadow: 0 0.12em 0 rgba(0, 0, 0, 0.28);
+}
+
+.lcd-button:hover {
+  background: #2f463c;
+}
+
+.lcd-button:active {
+  transform: translateY(0.1em);
+  box-shadow: none;
+}
+
+.lcd-button--small {
+  font-size: 0.95em;
+  padding: 0.02em 0.6em;
+}
+
+.progress__fill {
+  width: 42%;
+  animation: boot-progress 1.35s ease-in-out infinite alternate;
+}
+
+@keyframes boot-progress {
+  from {
+    width: 14%;
+  }
+  to {
+    width: 92%;
+  }
+}

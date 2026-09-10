@@ -1,0 +1,1264 @@
+/* ============================================================================
+   Device shell: casing, molded seams, hinge, hardware and physical controls.
+   Everything is flat 2D — depth comes from layered gradients and shadows.
+   ========================================================================== */
+
+.device {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 46px 1fr;
+  /* minmax(0, 1fr) keeps the 756px frame authoritative: long panels scroll
+     inside their LCD instead of stretching the casing. */
+  grid-template-rows: minmax(0, 1fr);
+  width: min(1176px, 100%);
+  height: 756px;
+  filter: drop-shadow(0 2px 2px rgba(46, 26, 22, 0.34))
+    drop-shadow(0 20px 28px rgba(38, 24, 22, 0.2));
+}
+
+/* ------------------------------------------------------------------ halves -- */
+
+.half {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  padding: 22px;
+  clip-path: var(--half-clip);
+  background-color: var(--red-600);
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 7%),
+    radial-gradient(80% 46% at 14% 2%, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 62%),
+    radial-gradient(70% 40% at 92% 100%, rgba(60, 6, 4, 0.42), rgba(60, 6, 4, 0) 68%),
+    linear-gradient(168deg, var(--red-500) 0%, var(--red-600) 34%, var(--red-700) 74%, var(--red-800) 100%);
+}
+
+/* Molded corners: one continuous 46px chamfer at each outer corner — no
+   staircase steps — with a longer faceted cut along the bottom of the shell
+   mirroring the reference casing. The hinge side keeps a small chamfer. */
+.half--left {
+  --half-clip: polygon(
+    0 46px,
+    46px 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    var(--bottom-cut-x, 62px) 100%,
+    0 calc(100% - var(--bottom-cut-y, 96px))
+  );
+}
+
+.half--right {
+  --half-clip: polygon(
+    12px 0,
+    calc(100% - 46px) 0,
+    100% 46px,
+    100% calc(100% - var(--bottom-cut-y, 96px)),
+    calc(100% - var(--bottom-cut-x, 62px)) 100%,
+    12px 100%,
+    0 calc(100% - 12px),
+    0 12px
+  );
+}
+
+/* Molded lip: a raised outer band. Its rounded corner is clipped by the
+   chamfer, so the shell reads as one cast piece rather than a cut sheet. */
+.half__gloss {
+  position: absolute;
+  inset: 7px;
+  border-radius: 30px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(63, 10, 7, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -2px 0 rgba(63, 10, 7, 0.22);
+}
+
+/* Second, inner molding line. Its radius sits fully inside the chamfer, so the
+   molded seam shows a genuine rounded transition before the angled edge. */
+.half__mold {
+  position: absolute;
+  inset: 16px;
+  border-radius: 30px 30px 22px 22px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(63, 10, 7, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.13);
+}
+
+/* Deeper red side edges, as if the shell were thicker than the face. */
+.half::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0) 3px),
+    linear-gradient(0deg, rgba(58, 10, 6, 0.34) 0, rgba(58, 10, 6, 0) 3px),
+    linear-gradient(90deg, rgba(63, 10, 7, 0.42) 0, rgba(63, 10, 7, 0) 26px),
+    linear-gradient(270deg, rgba(63, 10, 7, 0.42) 0, rgba(63, 10, 7, 0) 26px);
+}
+
+/* ------------------------------------------------------------------ screws -- */
+
+.screw {
+  position: absolute;
+  z-index: 2;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 28%, #f0ebe0 0%, #c3bcab 38%, #8d8574 72%, #625b4d 100%);
+  box-shadow:
+    inset 0 -1px 2px rgba(30, 10, 4, 0.55),
+    0 1px 1px rgba(30, 10, 4, 0.45);
+}
+
+.screw::after {
+  content: "";
+  position: absolute;
+  inset: 3.6px 1.4px;
+  border-radius: 1px;
+  background: rgba(46, 20, 12, 0.72);
+  transform: rotate(32deg);
+}
+
+.screw--tl { left: 16px; top: 16px; }
+.screw--tr { right: 16px; top: 16px; }
+.screw--bl { left: 16px; bottom: 16px; }
+.screw--br { right: 16px; bottom: 16px; }
+
+.screw--bezel-tl { left: 9px; top: 9px; width: 8px; height: 8px; }
+.screw--bezel-tr { right: 9px; top: 9px; width: 8px; height: 8px; }
+.screw--bezel-bl { left: 9px; bottom: 9px; width: 8px; height: 8px; }
+.screw--bezel-br { right: 9px; bottom: 9px; width: 8px; height: 8px; }
+
+.screw--bezel-tl::after,
+.screw--bezel-tr::after,
+.screw--bezel-bl::after,
+.screw--bezel-br::after {
+  inset: 2.8px 1.1px;
+}
+
+/* -------------------------------------------------------------- top deck -- */
+
+.deck {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.deck--top {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 14px;
+  align-items: center;
+  height: 108px;
+}
+
+/* Sensor deck: the lens + lamps sit on their own raised, shaped plate whose
+   right edge carries an angled seam, as on the reference casing. */
+.deck--sensor > .lens,
+.deck--sensor > .deck__id {
+  position: relative;
+  z-index: 1;
+}
+
+.deck__sensor-plate {
+  position: absolute;
+  inset: -7px auto -7px -9px;
+  width: 70%;
+  border-radius: 18px 8px 8px 18px;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 46%),
+    linear-gradient(166deg, var(--red-500) 0%, var(--red-600) 40%, var(--red-700) 78%, var(--red-800) 100%);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -2px 0 rgba(58, 8, 5, 0.3),
+    inset 0 0 0 1px rgba(58, 8, 5, 0.18),
+    0 4px 9px rgba(38, 22, 18, 0.24);
+}
+
+/* The shaped seam itself: a slanted molded ridge hugging the plate edge. */
+.deck__sensor-plate::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  right: -3px;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(58, 8, 5, 0.4));
+  transform: skewX(-9deg);
+}
+
+.deck--top::after,
+.deck--plaque::after,
+.deck--controls::before,
+.deck--keypad::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(63, 10, 7, 0.45), rgba(255, 255, 255, 0.16));
+  pointer-events: none;
+}
+
+.deck--top::after,
+.deck--plaque::after {
+  bottom: -7px;
+}
+
+.deck--controls::before,
+.deck--keypad::before {
+  top: -7px;
+  background: linear-gradient(0deg, rgba(63, 10, 7, 0.45), rgba(255, 255, 255, 0.14));
+}
+
+.deck__id {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* -------------------------------------------------------------------- lens -- */
+
+.lens {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 210deg, #f2ede1, #b9b2a1 22%, #efeade 46%, #a49c8b 68%, #ded8c9 100%);
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.85),
+    inset 0 -3px 5px rgba(63, 10, 7, 0.55),
+    0 3px 6px rgba(63, 10, 7, 0.45);
+  display: grid;
+  place-items: center;
+}
+
+.lens__glass {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.95) 0 5%, rgba(255, 255, 255, 0.42) 13%, rgba(255, 255, 255, 0) 30%),
+    radial-gradient(circle at 50% 58%, #8fd0ff 0 10%, #3a8ce8 34%, #14509f 64%, #062a5f 100%);
+  box-shadow:
+    inset 0 -6px 12px rgba(2, 12, 40, 0.62),
+    inset 0 4px 10px rgba(255, 255, 255, 0.34),
+    inset 0 0 0 2px rgba(8, 24, 60, 0.45),
+    0 0 16px rgba(72, 150, 255, 0.4);
+}
+
+.lens__glass::after {
+  content: "";
+  position: absolute;
+  left: 16%;
+  top: 12%;
+  width: 26%;
+  height: 20%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  filter: blur(1px);
+}
+
+/* ------------------------------------------------------------------- lamps -- */
+
+.lamps {
+  display: flex;
+  justify-content: flex-start;
+  gap: 18px;
+}
+
+.lamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.lamp__dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, rgba(255, 255, 255, 0.85) 0 14%, rgba(255, 255, 255, 0) 44%), var(--lamp);
+  box-shadow:
+    inset 0 -2px 3px rgba(30, 6, 4, 0.55),
+    inset 0 0 0 1px rgba(30, 6, 4, 0.35),
+    0 0 8px var(--lamp-glow);
+}
+
+.lamp__label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #ffe0d3;
+  opacity: 0.9;
+}
+
+.lamp--power { --lamp: #e0342a; --lamp-glow: rgba(255, 90, 60, 0.55); }
+.lamp--scan { --lamp: #f2b21c; --lamp-glow: rgba(255, 200, 60, 0.5); }
+.lamp--link { --lamp: #46c34a; --lamp-glow: rgba(90, 240, 120, 0.5); }
+
+.lamp:not(.is-lit) .lamp__dot {
+  filter: saturate(0.35) brightness(0.6);
+  box-shadow: inset 0 -2px 3px rgba(30, 6, 4, 0.6), inset 0 0 0 1px rgba(30, 6, 4, 0.4);
+}
+
+.engrave {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.16em;
+  text-align: right;
+  color: #3a0906;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.26);
+}
+
+.engrave__sub {
+  display: block;
+  letter-spacing: 0.24em;
+  opacity: 0.82;
+}
+
+.engrave--tiny {
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-align: right;
+}
+
+/* ------------------------------------------------------------------ bezels -- */
+
+.bezel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(74, 60, 40, 0.42);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.4) 0 1px,
+      rgba(112, 98, 74, 0.05) 1px 3px
+    ),
+    linear-gradient(180deg, var(--cream-100) 0%, var(--cream-200) 46%, var(--cream-300) 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -3px 0 rgba(90, 74, 52, 0.42),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 3px 0 rgba(63, 10, 7, 0.55),
+    0 9px 18px rgba(38, 22, 18, 0.26);
+}
+
+.bezel::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 12px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(120, 104, 78, 0.28),
+    inset 0 2px 7px rgba(70, 58, 40, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* The main screen wears a substantially thicker cream/silver bezel, like the
+   moulded frame around the reference's green panel. */
+.bezel--main {
+  padding: 20px 20px 19px;
+  border-radius: 22px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.45) 0 1px,
+      rgba(112, 98, 74, 0.05) 1px 3px
+    ),
+    linear-gradient(180deg, #fdfbf6 0%, #f2eee5 20%, #e4ded0 56%, #d0c8b4 100%);
+  box-shadow:
+    inset 0 2.5px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -4px 0 rgba(96, 80, 58, 0.42),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+    0 4px 0 rgba(63, 10, 7, 0.5),
+    0 12px 22px rgba(38, 22, 18, 0.28);
+}
+
+.bezel--main::before {
+  inset: 7px;
+  border-radius: 15px;
+  box-shadow:
+    inset 0 0 0 1px rgba(120, 104, 78, 0.32),
+    inset 0 3px 9px rgba(70, 58, 40, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.bezel--info {
+  padding: 17px;
+  border-radius: 18px;
+}
+
+.bezel--main,
+.bezel--info {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* --------------------------------------------------------- control deck -- */
+
+.deck--controls {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 16px;
+  align-items: center;
+  height: 132px;
+}
+
+.dpad {
+  position: relative;
+  width: 132px;
+  height: 132px;
+}
+
+.dpad__base {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(
+    34% 0,
+    66% 0,
+    66% 34%,
+    100% 34%,
+    100% 66%,
+    66% 66%,
+    66% 100%,
+    34% 100%,
+    34% 66%,
+    0 66%,
+    0 34%,
+    34% 34%
+  );
+  background: linear-gradient(158deg, #55555a 0%, #303034 42%, #1a1a1e 72%, #101013 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.7);
+}
+
+.dpad__hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34%;
+  height: 34%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 34%, rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0.35) 70%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.dpad__key {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  transition: background 120ms ease;
+}
+
+.dpad__key--up { left: 34%; top: 0; width: 32%; height: 34%; }
+.dpad__key--down { left: 34%; top: 66%; width: 32%; height: 34%; }
+.dpad__key--left { left: 0; top: 34%; width: 34%; height: 32%; }
+.dpad__key--right { left: 66%; top: 34%; width: 34%; height: 32%; }
+
+.dpad__key:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); }
+.dpad__key:active:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
+.dpad__key:disabled { opacity: 0.42; }
+.dpad__key:focus-visible { outline-offset: -3px; }
+
+.dpad__chevron {
+  width: 0;
+  height: 0;
+  opacity: 0.6;
+  border: 5px solid transparent;
+}
+
+.dpad__key--up .dpad__chevron { border-bottom-color: #d9d4c8; border-top-width: 0; }
+.dpad__key--down .dpad__chevron { border-top-color: #d9d4c8; border-bottom-width: 0; }
+.dpad__key--left .dpad__chevron { border-right-color: #d9d4c8; border-left-width: 0; }
+.dpad__key--right .dpad__chevron { border-left-color: #d9d4c8; border-right-width: 0; }
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  align-content: center;
+  justify-items: center;
+}
+
+.ctl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.ctl--below {
+  flex-direction: column-reverse;
+}
+
+.ctl__label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: #ffd9c9;
+  opacity: 0.92;
+}
+
+.pill {
+  position: relative;
+  width: 100%;
+  max-width: 92px;
+  height: 30px;
+  border: 0;
+  border-radius: 17px;
+  background: linear-gradient(180deg, #4a4a50 0%, #232327 48%, #0e0e11 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.65),
+    0 3px 0 #450804,
+    0 6px 10px rgba(38, 22, 18, 0.4);
+  display: grid;
+  place-items: center;
+}
+
+.pill__cap {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #ddd8cc;
+}
+
+.pill:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.6),
+    0 1px 0 #450804,
+    0 2px 4px rgba(38, 22, 18, 0.42);
+}
+
+.pill:disabled {
+  opacity: 0.5;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.16), 0 2px 0 #450804;
+}
+
+.amber {
+  width: 100%;
+  max-width: 92px;
+  height: 30px;
+  border: 0;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #ffce62 0%, var(--amber) 44%, #d1861a 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -3px 0 rgba(120, 66, 4, 0.5),
+    0 3px 0 #8a4a05,
+    0 6px 10px rgba(38, 22, 18, 0.36);
+  transition: transform 80ms ease;
+}
+
+.amber:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4), 0 1px 0 #8a4a05;
+}
+
+.amber.is-active {
+  background: linear-gradient(180deg, #ffe9b0 0%, #ffc95a 46%, #e09a20 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -3px 0 rgba(120, 66, 4, 0.5),
+    0 0 0 2px rgba(255, 236, 180, 0.55),
+    0 3px 0 #8a4a05;
+}
+
+.deck--foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  height: 30px;
+}
+
+.vents {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 66px;
+}
+
+.vents__slot {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #3f0a07, #8b1d14);
+  box-shadow:
+    inset 0 1px 0 rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+/* --------------------------------------------------------------- hinge -- */
+
+.hinge {
+  position: relative;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #2f0805, #1d0403);
+}
+
+.hinge__bar {
+  position: absolute;
+  inset: 0 9px;
+  background: linear-gradient(
+    90deg,
+    #4d0d09 0%,
+    #9c1e15 20%,
+    #d8503a 46%,
+    #a8231a 74%,
+    #5e120c 92%,
+    #3f0a07 100%
+  );
+}
+
+.hinge__knuckles {
+  position: absolute;
+  inset: 8px 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hinge__knuckle {
+  position: relative;
+  flex: 1;
+  border-radius: 13px;
+  background: linear-gradient(
+    90deg,
+    #5e120c 0%,
+    #a8231a 16%,
+    #e2604a 48%,
+    #a8231a 78%,
+    #4d0d09 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(30, 4, 3, 0.55);
+}
+
+.hinge__knuckle::before,
+.hinge__knuckle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #6b5a4a, #241a12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.hinge__knuckle::before { top: 5px; }
+.hinge__knuckle::after { bottom: 5px; }
+
+/* --------------------------------------------------------------- plaque -- */
+
+.deck--plaque {
+  display: grid;
+  grid-template-columns: 1fr 104px;
+  gap: 12px;
+  height: 72px;
+}
+
+.plaque {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 18px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2c2c30 0%, #16161a 58%, #0b0b0e 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.7),
+    0 2px 6px rgba(38, 22, 18, 0.42);
+}
+
+.plaque__line {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: 0.18em;
+  color: #eae5d8;
+}
+
+.plaque__line--dim {
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  color: #8f8a7d;
+}
+
+.speaker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.grille {
+  display: grid;
+  grid-template-columns: repeat(5, 5px);
+  gap: 4px;
+}
+
+.grille__hole {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #400905;
+  box-shadow:
+    inset 0 1px 1px rgba(0, 0, 0, 0.75),
+    0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.speaker__caption {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: #ffd0bd;
+}
+
+.speaker__value {
+  display: block;
+  font-size: 11.5px;
+  color: #fff4ea;
+}
+
+/* --------------------------------------------------------------- search -- */
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 54px;
+}
+
+.search__label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: #ffd9c9;
+}
+
+.search__field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 42px;
+  padding: 0 8px 0 12px;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #5e120c 0%, #430906 100%);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 30px;
+  border: 0;
+  background: transparent;
+  color: #f7f2e7;
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+}
+
+.search__input::placeholder {
+  color: rgba(255, 202, 182, 0.65);
+}
+
+.search__input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.search__clear {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffe3d6;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.search__clear:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.search__submit {
+  height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #ffd071 0%, var(--amber) 46%, #cf8318 100%);
+  color: #40230a;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.6),
+    0 2px 0 #7d3f04;
+}
+
+.search__submit:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 0 #7d3f04;
+}
+
+/* --------------------------------------------------------------- keypad -- */
+
+.deck--keypad {
+  display: grid;
+  grid-template-columns: 1fr 128px;
+  gap: 14px;
+  align-items: center;
+  height: 150px;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 9px;
+  height: 100%;
+}
+
+.key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #5f9ce8 0%, #2f6fc4 46%, #1e4c92 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -3px 0 rgba(6, 24, 60, 0.55),
+    0 3px 0 #12315f,
+    0 5px 8px rgba(38, 22, 18, 0.34);
+  transition: transform 70ms ease;
+}
+
+.key:hover:not(:disabled) {
+  background: linear-gradient(180deg, #74aef2 0%, #3b7ed4 46%, #24559e 100%);
+}
+
+.key:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 1px 0 #12315f;
+}
+
+.key.is-active {
+  background: linear-gradient(180deg, #cfe6ff 0%, #86b6ee 48%, #4a7fc4 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -3px 0 rgba(6, 24, 60, 0.45),
+    0 0 0 2px rgba(198, 226, 255, 0.5),
+    0 3px 0 #12315f;
+}
+
+.key:disabled {
+  opacity: 0.45;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 2px 0 #12315f;
+}
+
+.key__cap {
+  font-family: var(--mono);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #f2f7ff;
+  text-shadow: 0 1px 0 rgba(4, 18, 44, 0.65);
+}
+
+.key__sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: #cfe0f7;
+}
+
+.key.is-active .key__cap,
+.key.is-active .key__sub {
+  color: #10305e;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.dial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.dial__button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 104px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #5b5b62 0%, #2a2a2f 48%, #101014 100%);
+  box-shadow:
+    inset 0 3px 3px rgba(255, 255, 255, 0.25),
+    inset 0 -8px 14px rgba(0, 0, 0, 0.72),
+    0 4px 0 #450804,
+    0 9px 14px rgba(38, 22, 18, 0.4);
+}
+
+.dial__button:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 3px 3px rgba(255, 255, 255, 0.15),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.8),
+    0 1px 0 #450804;
+}
+
+.dial__ring {
+  width: 62%;
+  height: 62%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 34%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 62%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.dial__caption {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: #ffd0bd;
+}
+
+.dial__caption-sub {
+  display: block;
+  font-size: 12px;
+  color: #fff4ea;
+}
+
+/* ------------------------------------------------------------ cartridge -- */
+
+.deck--bay {
+  height: 64px;
+}
+
+.cartridge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #b72719 0%, #8f1a12 56%, #6d120d 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.45),
+    0 3px 8px rgba(38, 22, 18, 0.38);
+}
+
+.cartridge:hover {
+  background: linear-gradient(180deg, #c5301f 0%, #9a1d14 56%, #75140e 100%);
+}
+
+.cartridge:active {
+  transform: translateY(2px);
+}
+
+.cartridge__slot {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 10px;
+  height: 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(63, 10, 7, 0.85), rgba(255, 255, 255, 0.14));
+}
+
+.cartridge__label,
+.cartridge__push {
+  position: relative;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: #ffe0d4;
+}
+
+.cartridge__label {
+  margin-top: 8px;
+  color: #ffd0bd;
+}
+
+.cartridge__push {
+  margin-top: 8px;
+  color: #fff6ef;
+}
+
+/* ============================================================== phone view == */
+
+/* Compact desktop: keep the sensor plate clear of the engraved title. */
+@media (min-width: 901px) and (max-width: 1120px) {
+  .deck__sensor-plate {
+    width: 66%;
+  }
+}
+
+@media (max-width: 1120px) {
+  .device {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    width: min(640px, 100%);
+    height: auto;
+  }
+
+  .half {
+    --bottom-cut-x: 26px;
+    --bottom-cut-y: 36px;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .hinge {
+    height: 46px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #2f0805, #1d0403);
+  }
+
+  .hinge__bar {
+    inset: 8px 0;
+    background: linear-gradient(
+      180deg,
+      #4d0d09 0%,
+      #9c1e15 22%,
+      #d8503a 48%,
+      #a8231a 76%,
+      #3f0a07 100%
+    );
+  }
+
+  .hinge__knuckles {
+    inset: 3px 10px;
+    flex-direction: row;
+    gap: 14px;
+  }
+
+  .hinge__knuckle {
+    border-radius: 12px;
+    background: linear-gradient(
+      180deg,
+      #5e120c 0%,
+      #a8231a 16%,
+      #e2604a 48%,
+      #a8231a 78%,
+      #4d0d09 100%
+    );
+  }
+
+  .hinge__knuckle::before,
+  .hinge__knuckle::after {
+    left: 6px;
+    top: 50%;
+    margin: -2.5px 0 0;
+  }
+
+  .hinge__knuckle::after {
+    left: auto;
+    right: 6px;
+  }
+
+  .deck--top {
+    grid-template-columns: 78px 1fr;
+    height: auto;
+  }
+
+  /* Narrower plate and tighter lamp row so the engraved title stays clear of
+     the shaped seam on small screens. */
+  .deck__sensor-plate {
+    width: 66%;
+  }
+
+  .lamps {
+    gap: 12px;
+  }
+
+  .lamp__label {
+    letter-spacing: 0;
+  }
+
+  .lens {
+    width: 72px;
+    height: 72px;
+  }
+
+  .lens__glass {
+    width: 56px;
+    height: 56px;
+  }
+
+  .bezel {
+    padding: 12px;
+  }
+
+  .bezel--main,
+  .bezel--info {
+    flex: 0 0 auto;
+  }
+
+  .deck--controls {
+    grid-template-columns: 118px 1fr;
+    gap: 12px;
+    height: auto;
+  }
+
+  .dpad {
+    width: 118px;
+    height: 118px;
+  }
+
+  .deck--foot {
+    height: auto;
+  }
+
+  .search {
+    height: auto;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .search__label {
+    flex: 1 0 100%;
+  }
+
+  .search__field {
+    height: 48px;
+  }
+
+  .search__submit {
+    height: 36px;
+    padding: 0 16px;
+  }
+
+  .search__clear {
+    width: 28px;
+    height: 28px;
+  }
+
+  .search__input {
+    font-size: 16px;
+  }
+
+  .deck--keypad {
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 16px;
+  }
+
+  .keypad {
+    height: auto;
+    /* explicit rows must be overridden — grid-auto-rows would not apply */
+    grid-template-rows: repeat(3, 54px);
+  }
+
+  .dial {
+    flex-direction: row;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .dial__button {
+    width: 78px;
+    height: 78px;
+  }
+
+  .deck--bay {
+    height: 62px;
+  }
+
+  .cartridge {
+    padding: 0 14px;
+  }
+
+  .cartridge__label,
+  .cartridge__push {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+}
+
+@media (max-width: 420px) {
+  .stage {
+    padding: 14px 10px 18px;
+  }
+
+  .half {
+    padding: 14px 12px;
+  }
+
+  .deck--controls {
+    grid-template-columns: 104px 1fr;
+  }
+
+  .dpad {
+    width: 104px;
+    height: 104px;
+  }
+
+  .pill,
+  .amber {
+    max-width: 84px;
+    height: 36px;
+  }
+}

@@ -1,0 +1,413 @@
+/* ------------------------------------------------------------------ *
+ * Responsive behaviour.
+ *
+ * Desktop keeps the opened-clamshell silhouette. Below 720px the two
+ * halves fold into a stacked tower joined by a horizontal hinge: the
+ * device stays recognisably a Pokédex instead of shrinking into
+ * unreadable pixels.
+ * ------------------------------------------------------------------ */
+
+/* Tablet: keep both halves side by side but relax the internal gutters. */
+@media (max-width: 1080px) {
+  .case-left {
+    padding: 1.2em 1em 0.8em;
+    gap: 0.6em;
+  }
+
+  .case-left__top {
+    gap: 1.3em;
+  }
+
+  .lens-socket {
+    width: 7em;
+    height: 7em;
+  }
+
+  .lens {
+    width: 5.4em;
+    height: 5.4em;
+  }
+
+  .case-right {
+    padding: 3.6em 1.1em 1em;
+  }
+
+  .right-panel__side {
+    width: 6.6em;
+  }
+
+  .speaker-grid {
+    gap: 0.34em;
+  }
+
+  .speaker-grid span {
+    width: 0.58em;
+    height: 0.58em;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Phone: fold the clamshell into a vertical stack.
+ * ------------------------------------------------------------------ */
+@media (max-width: 720px) {
+  .app {
+    padding: 1rem 0.85rem 1.6rem;
+    justify-content: flex-start;
+  }
+
+  .pokedex {
+    font-size: clamp(10px, 3.35vw, 13.5px);
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 32em;
+    height: auto;
+    filter: drop-shadow(0 1em 0.9em rgba(74, 32, 26, 0.26));
+  }
+
+  .pokedex__half {
+    width: 100%;
+  }
+
+  .pokedex__half--left {
+    height: 54em;
+  }
+
+  .pokedex__half--right {
+    height: 51em;
+    padding-block: 0;
+  }
+
+  /* Hinge becomes a horizontal barrel strip between the stacked halves. */
+  .pokedex__hinge {
+    width: 100%;
+    height: 2.8em;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.4em;
+  }
+
+  .hinge__bar {
+    left: 2%;
+    right: 2%;
+    top: 50%;
+    bottom: auto;
+    width: auto;
+    height: 1.3em;
+    transform: translateY(-50%);
+    background: linear-gradient(180deg, #4d0705 0%, #8d1510 20%, #c02a22 50%, #7c110d 80%, #430604 100%);
+  }
+
+  .hinge__knuckle {
+    width: 3.2em;
+    height: 2.3em;
+    border-radius: 1.1em / 0.5em;
+    background: linear-gradient(180deg, #8f8781 0%, #d6d0c9 26%, #efeae3 46%, #b8b0a8 72%, #7d746d 100%);
+  }
+
+  .hinge__knuckle::after {
+    inset: 12% 40%;
+    background: linear-gradient(90deg, #2a2622, #4a443e);
+  }
+
+  .case--left {
+    border-radius: 0 1.1em 1.1em 1.1em;
+    clip-path: polygon(3.4em 0, 100% 0, 100% 100%, 0 100%, 0 3.4em);
+  }
+
+  .case--right {
+    border-radius: 1.1em;
+  }
+
+  /* Left half internals */
+  .case-left {
+    padding: 0.9em 1em 0.7em;
+    gap: 0.55em;
+  }
+
+  .case-left__top {
+    gap: 1.1em;
+  }
+
+  .lens-socket {
+    width: 6.2em;
+    height: 6.2em;
+  }
+
+  .lens {
+    width: 4.7em;
+    height: 4.7em;
+    box-shadow:
+      0 0 0 0.32em #e3ded7,
+      0 0 0 0.48em #948b83,
+      0 0 0 0.56em #6d100c,
+      inset 0 -0.3em 0.6em rgba(0, 0, 0, 0.55),
+      inset 0 0.18em 0.3em rgba(255, 255, 255, 0.35);
+  }
+
+  .lamps {
+    gap: 0.85em;
+    padding-top: 0.35em;
+  }
+
+  .lamp__dome {
+    width: 1.75em;
+    height: 1.75em;
+  }
+
+  .lamp__label {
+    font-size: 0.62em;
+    letter-spacing: 0.08em;
+  }
+
+  .brand {
+    font-size: 0.6em;
+    padding-top: 2.6em;
+    letter-spacing: 0.12em;
+  }
+
+  .case-left__controls {
+    padding: 0.7em 0.3em 0;
+  }
+
+  .dpad {
+    width: 7.6em;
+    height: 7.6em;
+    margin-left: 0.2em;
+  }
+
+  .ab-cluster {
+    gap: 1.2em;
+  }
+
+  .case-left__foot {
+    padding: 0.8em 0.3em 0;
+  }
+
+  /* The readout is narrow here: stack the physical data above the entry text
+     and pair the fields two-up so nothing has to wrap into a third line. */
+  .species__main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr);
+    gap: 0.55em;
+    padding: 0.5em 0.6em 0.4em;
+  }
+
+  .species__foot {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4em;
+    padding: 0.4em 0.6em 0.5em;
+  }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.24em 0.7em;
+  }
+
+  .field {
+    grid-template-columns: 3.5em minmax(0, 1fr);
+    gap: 0.3em;
+  }
+
+  .field--wide {
+    grid-column: 1 / -1;
+  }
+
+  .flavor {
+    max-height: 5.4em;
+    font-size: 0.98em;
+  }
+
+  .lcd__head {
+    font-size: 1.04em;
+    gap: 0.45em;
+    padding: 0.3em 0.55em 0.24em;
+  }
+
+  .lcd-chip {
+    font-size: 0.54em;
+  }
+
+  .stat-row {
+    grid-template-columns: 2.6em minmax(0, 1fr);
+    gap: 0.38em;
+    font-size: 1em;
+  }
+
+  .stats__body {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0.5em 0.6em 0.6em;
+  }
+
+  .stats__aside {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 0.1em solid var(--lcd-line);
+    padding-top: 0.4em;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.7em;
+  }
+
+  .index__label {
+    display: none;
+  }
+
+  .pill-row {
+    gap: 0.9em;
+  }
+
+  .pill {
+    min-width: 4.8em;
+  }
+
+  .speaker-slots span {
+    width: 4.4em;
+  }
+
+  .speaker-slots span:nth-child(2) {
+    width: 3.4em;
+  }
+
+  .speaker-slots span:nth-child(3) {
+    width: 2.4em;
+  }
+
+  /* Right half internals */
+  .case-right {
+    padding: 1.2em 1em 0.9em;
+    gap: 0.7em;
+  }
+
+  .marquee {
+    height: 3.3em;
+    padding: 0 1em;
+  }
+
+  .marquee__line {
+    font-size: 0.7em;
+    letter-spacing: 0.22em;
+  }
+
+  .right-panel {
+    flex: 1 1 auto;
+    height: auto;
+    flex-direction: column;
+    gap: 0.7em;
+  }
+
+  .bezel--sub {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .right-panel__side {
+    width: auto;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1.4em;
+    padding-top: 0;
+  }
+
+  .right-panel__note {
+    text-align: left;
+    line-height: 1.7;
+  }
+
+  .speaker-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 0.36em;
+  }
+
+  .speaker-grid span {
+    width: 0.52em;
+    height: 0.52em;
+  }
+
+  /* Tabs move above the readout so the map keeps its width. */
+  .area__body {
+    flex-direction: column;
+  }
+
+  .area__tabs {
+    order: -1;
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0.2em 0.3em;
+    border-left: 0;
+    border-bottom: 0.1em solid var(--lcd-line);
+    scrollbar-width: none;
+  }
+
+  .area__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    width: auto;
+    flex: none;
+    white-space: nowrap;
+    padding: 0.12em 0.4em;
+    font-size: 1em;
+    border-left: 0;
+    border-bottom: 0.22em solid transparent;
+  }
+
+  .tab--active,
+  .tab--active:hover {
+    border-bottom-color: var(--lcd-ink);
+  }
+
+  .area-map {
+    min-height: 8em;
+  }
+
+  .right-controls {
+    padding: 0;
+    gap: 0.8em;
+  }
+
+  .key {
+    height: 2.5em;
+  }
+
+  .confirm {
+    width: 7.2em;
+  }
+
+  .confirm__button {
+    width: 5.6em;
+    height: 5.6em;
+  }
+
+  .cartridge {
+    height: 5em;
+  }
+
+  .app__hints {
+    display: none;
+  }
+}
+
+/* Small phones: trim the lens cluster further so nothing crowds. */
+@media (max-width: 400px) {
+  .brand {
+    display: none;
+  }
+
+  .case-left__tagline {
+    font-size: 0.62em;
+    letter-spacing: 0.2em;
+  }
+}
+
+/* Landscape phones and short desktop windows: keep the whole device visible. */
+@media (min-width: 721px) and (max-height: 620px) {
+  .pokedex {
+    font-size: clamp(6px, min(1.05vw, 1.5vh), 13px);
+  }
+}
