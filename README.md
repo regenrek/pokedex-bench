@@ -88,21 +88,21 @@ The code scores are the reviewers’ judgments. My preference after trying the a
 
 I agree with rethinking the skills and instructions we carry from one model to the next. OpenAI recommends [auditing skills and instruction files that influence Astra’s behavior](https://developers.openai.com/api/docs/guides/latest-model#instruction-following). My take is to remove what no longer helps, then deliberately bring back the architecture and code quality skills that matter for the repo. I wrote more about this in [my post on codebase drift](https://kevinkern.dev/posts/agentic-drift-in-large-codebase/).
 
-**Astra** is very good at getting to the result I want. Not just from a single prompt. It follows what I mean as the work develops, often better than I manage to explain it. But if I want that result and code I can comfortably maintain, I still need to give it direction.
+`Astra` is very good at getting to the result I want. Not just from a single prompt. It follows what I mean as the work develops, often better than I manage to explain it. But if I want that result and code I can comfortably maintain, I still need to give it direction.
 
-Beyond this Pokédex test, my current coding setup uses **GPT-5.6 Sol at medium** as the main worker and **GPT-6 Astra at medium** as an advisor. A separate **GPT-6 Astra orchestrator** is the thread I talk to. It delegates work to the other threads.
+Beyond this Pokédex test, my current coding setup uses `GPT-5.6 Sol at medium` as the main worker and `GPT-6 Astra at medium` as an advisor. A separate `GPT-6 Astra orchestrator` is the thread I talk to. It delegates work to the other threads.
 
 ![My workspace with an orchestrator, an Astra advisor, a Sol coding worker, and separate 3D threads](assets/workflow.jpg)
 
-For the actual 3D work, I use **Astra** alone. It’s a [beast in my 3D experiments](https://kevinkern.dev/benchmarks/3d/audi-quattro/). Nothing else I’ve tried has come close.
+For the actual 3D work, I use `Astra` alone. It’s a [beast in my 3D experiments](https://kevinkern.dev/benchmarks/3d/audi-quattro/). Nothing else I’ve tried has come close.
 
 Mixing models has its downsides, though. In one of my other runs, Astra threw away DeepSeek’s 3D result and rebuilt it itself without telling me first. And yeah, I wasn’t even mad. Something similar happened with Luna as the worker. Astra told me the result wasn’t good enough and did its own implementation.
 
 That is why I wouldn’t mix models just to save money. The cheaper worker can finish its part, then the stronger model does the work again. More routing does not automatically buy you the best quality at a lower cost.
 
-For me, there are two useful starting points. If I want a strong result quickly without managing several agents, I start with **Astra at low**. That is my general recommendation from using it, not a setting tested here. This Pokédex run used medium. For visual work, design, and 3D, I would also stay with Astra.
+For me, there are two useful starting points. If I want a strong result quickly without managing several agents, I start with `Astra at low`. That is my general recommendation from using it, not a setting tested here. This Pokédex run used medium. For visual work, design, and 3D, I would also stay with Astra.
 
-If the priority is code that humans can read and maintain, I would try **Sol or DeepSeek as the worker, with Astra advising and reviewing**. I would also keep architecture and code quality skills in the repo. Splitting the work can help, but it still needs direction and review.
+If the priority is code that humans can read and maintain, I would try `Sol` or `DeepSeek` as the worker, with `Astra` advising and reviewing. I would also keep architecture and code quality skills in the repo. Splitting the work can help, but it still needs direction and review.
 
 ## Run locally
 
