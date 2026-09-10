@@ -1,6 +1,6 @@
 # Pokédex benchmark
 
-**GPT-6 Astra was fastest. Astra + DeepSeek produced the strongest code. DeepSeek alone looked closest to the reference.** All three worked in ordinary use, and all three still need robustness fixes.
+**GPT-6 Astra was fastest and is the benchmark author's visual favorite. Astra + DeepSeek produced the strongest code.** All three worked in ordinary use, and all three still need robustness fixes.
 
 Three implementations of the same task, reviewed independently by Fable 5.1 and Codex. Build a physical red Pokédex with real [PokéAPI](https://pokeapi.co/) data, the original 151 Pokémon, search, keyboard navigation, caching, and a usable mobile layout.
 
@@ -14,7 +14,7 @@ GPT-6 Astra (`gpt-6-astra`) worked alone in Codex Desktop with medium reasoning 
 
 ![GPT-6 Astra desktop result](assets/astra-desktop.png)
 
-**Fastest prototype and fewest observed tokens.** Finished in 8m 08s with 1.33 million observed workflow tokens. All 26 supplied tests passed. Code scores were 57 from Fable and 65 from Codex. Visual scores were 53 and 70.
+**Fastest prototype and fewest observed tokens.** Finished in 8m 08s with 1.33 million observed workflow tokens. All 26 supplied tests passed. Code scores were 57 from Fable and 65 from Codex.
 
 The app worked in ordinary use, but too much behavior and presentation lives in one component.
 
@@ -31,7 +31,7 @@ GPT-6 Astra (`gpt-6-astra`, medium reasoning) led the work in Codex Desktop. Dee
 
 ![GPT-6 Astra and DeepSeek V4.1 Flash desktop result](assets/astra-deepseek-desktop.png)
 
-**Strongest code and the best starting point for a maintained app.** Finished in 32m 39s with at least 33.76 million observed workflow tokens across both models. All 52 supplied tests passed. Code scores were 86 from Fable and 80 from Codex. Visual scores were 77 and 68.
+**Strongest code and the best starting point for a maintained app.** Finished in 32m 39s with at least 33.76 million observed workflow tokens across both models. All 52 supplied tests passed. Code scores were 86 from Fable and 80 from Codex.
 
 This implementation has clearer state and data boundaries, although the additional robustness probes still found cache defects.
 
@@ -48,7 +48,7 @@ DeepSeek V4.1 Flash (`deepseek-flash`) worked alone in DeepSeek Harness with max
 
 ![DeepSeek V4.1 Flash desktop result](assets/deepseek-desktop.png)
 
-**Closest visual match to the reference.** Finished in 23m 27s with at least 27.43 million observed workflow tokens. All 95 supplied tests passed. Code scores were 66 from Fable and 69 from Codex. Visual scores were 84 and 75.
+Finished in 23m 27s with at least 27.43 million observed workflow tokens. All 95 supplied tests passed. Code scores were 66 from Fable and 69 from Codex.
 
 The code has useful separation but more confirmed interaction bugs, including a late retry replacing the selected Pokémon and male Nidoran resolving to the female entry.
 
@@ -63,7 +63,7 @@ Desktop screenshots show the initial Bulbasaur screen at 1440 × 900. Mobile scr
 
 ## Reading the results
 
-Scores are out of 100 and reflect reviewer judgment. Token totals include cached input, output, and observed worker usage. They include the original completion reports but exclude later accounting work. Some retry usage is missing for the two DeepSeek configurations. Monetary cost is unknown for all three, and recorded time is not time to a fully accepted product.
+Code scores are out of 100 and reflect reviewer judgment. Visual preference is the benchmark author's assessment. The screenshots let readers judge the designs for themselves. Token totals include cached input, output, and observed worker usage. They include the original completion reports but exclude later accounting work. Some retry usage is missing for the two DeepSeek configurations. Monetary cost is unknown for all three, and recorded time is not time to a fully accepted product.
 
 ## Why the reviews differ
 
@@ -71,7 +71,7 @@ Both reviewers installed, tested, built, and drove the apps in a browser. Normal
 
 Fable passed the functional gate and ranked GPT-6 Astra first overall because speed and token use outweighed its weaker code. Codex added malformed-response and cache-race probes. A deliberately malformed species response crashed every app and remained cached after reload. Codex therefore withheld overall acceptance. This was an injected fault, not something observed from normal live PokéAPI responses. Additional probes also found defects in the Astra + DeepSeek implementation, so Fable's initial finding of no reproduced bugs in that implementation is incomplete.
 
-The useful middle ground is to show ordinary functionality and robustness separately, retain both reviewers' scores, and name the category leaders. Averaging everything into one winner would hide the acceptance disagreement. Both reviewers agree on the code ranking and that DeepSeek alone most closely follows the reference. Visual scores vary more because they judge fidelity and presentation differently.
+The useful middle ground is to show ordinary functionality and robustness separately, retain both reviewers' scores, and name the category leaders. Averaging everything into one winner would hide the acceptance disagreement. Both reviewers agree on the code ranking.
 
 Fable counted 1.26 million tokens for Astra alone and 33.30 million for Astra + DeepSeek. The totals above include their final completion reports, which explains the difference. The standalone DeepSeek total agrees.
 
