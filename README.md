@@ -102,7 +102,7 @@ That is why I wouldn’t mix models just to save money. The cheaper worker can f
 
 For me, there are two useful starting points. If I want a strong result quickly without managing several agents, I start with `Astra at low`. That is my general recommendation from using it, not a setting tested here. This Pokédex run used medium. For visual work, design, and 3D, I would also stay with Astra.
 
-If the priority is code that humans can read and maintain, I would try `Sol` or `DeepSeek` as the worker, with `Astra` advising and reviewing. I would also keep architecture and code quality skills in the repo. Splitting the work can help, but it still needs direction and review.
+If the priority is code that humans can read and maintain, I would try `Sol` or even `DeepSeek` or `Grok` as the worker, with `Astra` advising and reviewing. I would also keep architecture and code quality skills in the repo. Splitting the work can help, but it still needs direction and review.
 
 ## Run locally
 
