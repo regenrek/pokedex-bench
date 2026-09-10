@@ -83,3 +83,5 @@
 **/.vercel/
 **/.cursor/
 **/.codex/
+
+!/assets/workflow.jpg

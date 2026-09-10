@@ -63,32 +63,50 @@ Desktop screenshots show the initial Bulbasaur screen at 1440 × 900. Mobile scr
 
 ## What I found
 
-Here’s my honest take. Astra gave me the best overall result in this benchmark, and it finished fastest. After trying all three apps myself, it’s the one I prefer.
+Here’s my honest take. **Astra** gave me the best overall result in this benchmark, and it finished fastest. After trying all three apps myself, it’s the one I prefer.
 
 There is just one thing. If you want clear abstractions and code that humans can maintain, you still need to look closely. Both reviewers ranked Astra’s code below the other two in this benchmark. Too much sits in one component, and the CSS has repeated layout fixes that make it harder to follow.
 
-Astra + DeepSeek did better here. Loading data, keeping track of the selected Pokémon, and drawing the interface are more clearly separated. It’s the codebase I would rather maintain. But it took about four times as long and used about 25 times as many recorded tokens as Astra alone.
+**Astra + DeepSeek** did better here. Loading data, keeping track of the selected Pokémon, and drawing the interface are more clearly separated. It’s the codebase I would rather maintain. But it took about four times as long and used about 25 times as many recorded tokens as **Astra** alone.
 
-DeepSeek alone also split the code into smaller parts, but those parts did not always work together correctly. A delayed retry could replace the Pokémon you had just selected. Some CSS names did not match the components, so the indicator lights looked wrong. More structure did not automatically mean fewer bugs.
+**DeepSeek alone** also split the code into smaller parts, but those parts did not always work together correctly. A delayed retry could replace the Pokémon you had just selected. Some CSS names did not match the components, so the indicator lights looked wrong. More structure did not automatically mean fewer bugs.
 
-For me, Astra wins on the finished result. Astra + DeepSeek wins on code quality. If the code needs to stay understandable over time, I would make that part of the brief and keep code review and QA in the process. This is one benchmark, not a verdict on everything these models can do.
+For me, **Astra** wins on the finished result. **Astra + DeepSeek** wins on code quality. If the code needs to stay understandable over time, I would make that part of the brief and keep code review and QA in the process. This is one benchmark, not a verdict on everything these models can do.
 
 ## The numbers
 
-| Metric | GPT-6 Astra | Astra + DeepSeek V4.1 Flash | DeepSeek V4.1 Flash |
+| Metric | **GPT-6 Astra** | **Astra + DeepSeek V4.1 Flash** | **DeepSeek V4.1 Flash** |
 | --- | --- | --- | --- |
 | Time to finish | 8m 08s | 32m 39s | 23m 27s |
 | Recorded tokens | 1.33 million | At least 33.76 million | At least 27.43 million |
 | Code quality from Fable 5.1 | 57 / 100 | 86 / 100 | 66 / 100 |
 | Code quality from Codex | 65 / 100 | 80 / 100 | 69 / 100 |
-| Normal search and navigation | Worked | Worked | Worked |
-| Additional error checks | Needs fixes | Needs fixes | Needs fixes |
 
 The code scores are the reviewers’ judgments. My preference after trying the apps is separate from those scores. The recorded time ends at final verification, before any fixes suggested by the independent reviews.
 
 Tokens include input, cached input, output, and work from other agents. Some retry usage is missing for the DeepSeek runs. Dollar costs are unknown, so fewer tokens does not prove a lower bill.
 
 All three worked in ordinary use. In an extra test, each app received API data in an unexpected format. All three crashed and were still broken after a reload because they had saved the bad data. This was a test we deliberately set up, not something observed from normal PokéAPI responses. The supplied tests did not catch it.
+
+## How I use these models now
+
+I agree with rethinking the skills and instructions we carry from one model to the next. OpenAI recommends [auditing skills and instruction files that influence Astra’s behavior](https://developers.openai.com/api/docs/guides/latest-model#instruction-following). My take is to remove what no longer helps, then deliberately bring back the architecture and code quality skills that matter for the repo. I wrote more about this in [my post on codebase drift](https://kevinkern.dev/posts/agentic-drift-in-large-codebase/).
+
+**Astra** is very good at getting to the result I want. Not just from a single prompt. It follows what I mean as the work develops, often better than I manage to explain it. But if I want that result and code I can comfortably maintain, I still need to give it direction.
+
+Beyond this Pokédex test, my current coding setup uses **GPT-5.6 Sol at medium** as the main worker and **GPT-6 Astra at medium** as an advisor. A separate **GPT-6 Astra orchestrator** is the thread I talk to. It delegates work to the other threads.
+
+![My workspace with an orchestrator, an Astra advisor, a Sol coding worker, and separate 3D threads](assets/workflow.jpg)
+
+For the actual 3D work, I use **Astra** alone. It’s a [beast in my 3D experiments](https://kevinkern.dev/benchmarks/3d/audi-quattro/). Nothing else I’ve tried has come close.
+
+Mixing models has its downsides, though. In one of my other runs, Astra threw away DeepSeek’s 3D result and rebuilt it itself without telling me first. And yeah, I wasn’t even mad. Something similar happened with Luna as the worker. Astra told me the result wasn’t good enough and did its own implementation.
+
+That is why I wouldn’t mix models just to save money. The cheaper worker can finish its part, then the stronger model does the work again. More routing does not automatically buy you the best quality at a lower cost.
+
+For me, there are two useful starting points. If I want a strong result quickly without managing several agents, I start with **Astra at low**. That is my general recommendation from using it, not a setting tested here. This Pokédex run used medium. For visual work, design, and 3D, I would also stay with Astra.
+
+If the priority is code that humans can read and maintain, I would try **Sol or DeepSeek as the worker, with Astra advising and reviewing**. I would also keep architecture and code quality skills in the repo. Splitting the work can help, but it still needs direction and review.
 
 ## Run locally
 
