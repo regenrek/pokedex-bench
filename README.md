@@ -65,7 +65,7 @@ Desktop screenshots show the initial Bulbasaur screen at 1440 × 900. Mobile scr
 
 Here’s my honest take. **Astra** gave me the best overall result in this benchmark, and it finished fastest. After trying all three apps myself, it’s the one I prefer.
 
-There is just one thing. If you want clear abstractions and code that humans can maintain, you still need to look closely. Both reviewers ranked Astra’s code below the other two in this benchmark. Too much sits in one component, and the CSS has repeated layout fixes that make it harder to follow.
+There is just one thing. If you want clear abstractions and code that humans can maintain, you still need to look closely. Both reviewers ranked Astra’s code below the other two in this benchmark. Too much sits in [one component](https://github.com/regenrek/pokedex-bench/blob/54158dd0196eb7e2bc700d1bab5f8272c1ca5771/pokedex-astra/src/App.tsx#L8-L373), and the CSS has [repeated layout fixes](https://github.com/regenrek/pokedex-bench/blob/54158dd0196eb7e2bc700d1bab5f8272c1ca5771/pokedex-astra/src/styles.css#L1681-L1863) that make it harder to follow.
 
 **Astra + DeepSeek** did better here. Loading data, keeping track of the selected Pokémon, and drawing the interface are more clearly separated. It’s the codebase I would rather maintain. But it took about four times as long and used about 25 times as many recorded tokens as **Astra** alone.
 
@@ -82,11 +82,7 @@ For me, **Astra** wins on the finished result. **Astra + DeepSeek** wins on code
 | Code quality from Fable 5.1 | 57 / 100 | 86 / 100 | 66 / 100 |
 | Code quality from Codex | 65 / 100 | 80 / 100 | 69 / 100 |
 
-The code scores are the reviewers’ judgments. My preference after trying the apps is separate from those scores. The recorded time ends at final verification, before any fixes suggested by the independent reviews.
-
-Tokens include input, cached input, output, and work from other agents. Some retry usage is missing for the DeepSeek runs. Dollar costs are unknown, so fewer tokens does not prove a lower bill.
-
-All three worked in ordinary use. In an extra test, each app received API data in an unexpected format. All three crashed and were still broken after a reload because they had saved the bad data. This was a test we deliberately set up, not something observed from normal PokéAPI responses. The supplied tests did not catch it.
+The code scores are the reviewers’ judgments. My preference after trying the apps is separate from those scores.
 
 ## How I use these models now
 
