@@ -79,10 +79,15 @@ For me, **Astra** wins on the finished result. **Astra + DeepSeek** wins on code
 | --- | --- | --- | --- |
 | Time to finish | 8m 08s | 32m 39s | 23m 27s |
 | Recorded tokens | 1.33 million | At least 33.76 million | At least 27.43 million |
+| Estimated API cost, USD | ~$3.18 | ~$13.74 | ~$0.32 |
 | Code quality from Fable 5.1 | 57 / 100 | 86 / 100 | 66 / 100 |
 | Code quality from Codex | 65 / 100 | 80 / 100 | 69 / 100 |
 
 The code scores are the reviewers’ judgments. My preference after trying the apps is separate from those scores.
+
+Estimates use recorded usage, [Astra’s standard API rates](https://developers.openai.com/api/docs/models/gpt-6-astra), and the arithmetic mean of [DeepSeek V4.1 Flash’s peak and off-peak rates](https://api-docs.deepseek.com/quick_start/pricing/) on September 10, 2026. These are API-equivalent estimates, not actual bills. Unrecorded retries and independent reviews are excluded.
+
+The mixed run’s estimate is about $13.38 for Astra and $0.37 for DeepSeek, with rounding. Astra processed about 11 million cached input tokens while directing and reviewing the work, compared with 1.23 million when working alone. Those cache reads account for about $11.02 of the mixed run’s cost.
 
 ## How I use these models now
 
