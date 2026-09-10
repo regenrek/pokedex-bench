@@ -1,0 +1,181 @@
+/* ==========================================================================
+   Design tokens — colours, materials and screen palettes for the Pokédex.
+   ========================================================================== */
+
+:root {
+  /* Casing */
+  --red-hi: #e0574a;
+  --red-light: #cf3a31;
+  --red-base: #bd2a28;
+  --red-mid: #a91f21;
+  --red-dark: #8a1418;
+  --red-deep: #6d0f14;
+  --red-seam: #5c0b10;
+  --red-shadow: #4a070c;
+
+  /* Ink on red */
+  --label-ink: #560a0e;
+  --label-ink-soft: #741517;
+
+  /* Lens + lamps */
+  --lens-blue: #2f86f0;
+  --lens-blue-deep: #0d3f9c;
+  --lens-rim: #c9ccd2;
+  --lamp-red: #e8382c;
+  --lamp-amber: #f2c218;
+  --lamp-green: #4fc23f;
+
+  /* Main LCD (pale green) */
+  --lcd-bg: #b7cfa2;
+  --lcd-bg-2: #a9c494;
+  --lcd-ink: #23391d;
+  --lcd-ink-soft: #3f5a34;
+  --lcd-line: #6f8a5b;
+  --lcd-line-soft: #90a97c;
+  --lcd-glow: rgba(255, 255, 255, 0.35);
+
+  /* Info LCD (deeper green + tan cells) */
+  --lcd2-bg: #a4bf88;
+  --lcd2-ink: #22371c;
+  --lcd2-cell: #ded6bf;
+  --lcd2-cell-ink: #2c3f22;
+  --lcd2-grid: #8aa871;
+
+  /* Marquee display (dark) */
+  --marquee-bg: #23281f;
+  --marquee-ink: #b9cfa2;
+
+  /* Hardware */
+  --key-blue: #2f6fd0;
+  --key-blue-dark: #1b478f;
+  --key-yellow: #f0b429;
+  --key-yellow-dark: #c98a10;
+  --key-dark: #26262a;
+  --key-dark-hi: #43434a;
+  --bezel-light: #cfcbc3;
+  --bezel-mid: #b3aea4;
+  --bezel-dark: #8b867c;
+
+  /* Typography */
+  --font-lcd: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  --font-label: "Helvetica Neue", "Segoe UI", Arial, system-ui, sans-serif;
+
+  /* Motion */
+  --speed-fast: 110ms;
+  --speed-med: 220ms;
+  --speed-slow: 420ms;
+  --ease-press: cubic-bezier(0.2, 0.8, 0.3, 1);
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-label);
+  /* Studio backdrop: bright sweep falling into a dark floor, like the reference. */
+  background:
+    radial-gradient(
+      120% 70% at 50% 8%,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0) 60%
+    ),
+    linear-gradient(
+      180deg,
+      #fbfaf9 0%,
+      #f0eeeb 42%,
+      #d9d6d2 58%,
+      #7e7c7e 74%,
+      #3a393b 88%,
+      #2b2a2c 100%
+    );
+  background-attachment: fixed;
+  color: #2b2a2c;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 2.4vh, 34px) clamp(8px, 2vw, 28px);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid #ffe27a;
+  outline-offset: 2px;
+}
+
+/* A visible, device-friendly focus ring for controls sitting on red plastic. */
+.device :focus-visible {
+  outline: 2px solid #ffd34d;
+  outline-offset: 2px;
+  border-radius: 0.35em;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 50%;
+  translate: -50% -200%;
+  z-index: 20;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  background: #1c1c1e;
+  color: #ffe9a8;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: translate var(--speed-med) var(--ease-press);
+}
+
+.skip-link:focus-visible {
+  translate: -50% 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

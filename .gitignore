@@ -51,6 +51,23 @@
 !/pokedex-deepseek-v4.1-harness/playwright.config.ts
 !/pokedex-deepseek-v4.1-harness/.oxlintrc.json
 
+
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/
+/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/*
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/src/
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/public/
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/tests/
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/index.html
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/package.json
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/package-lock.json
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/tsconfig*.json
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/vite.config.ts
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/scripts/
+/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/scripts/*
+!/pokedex-deepseek-v4.1-astra-v2-better-astra-advisor/scripts/browser-smoke.mjs
+!/assets/deepseek-astra-desktop.png
+!/assets/deepseek-astra-mobile.png
+
 # Generated files and private material remain local at every depth.
 **/node_modules/
 **/dist/

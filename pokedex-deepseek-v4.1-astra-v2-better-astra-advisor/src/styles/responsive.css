@@ -1,0 +1,470 @@
+/* ==========================================================================
+   Responsive behaviour.
+
+   Desktop keeps the opened-clamshell arrangement. Below the fold breakpoint
+   the two halves stack vertically and the hinge becomes the horizontal fold,
+   with each half re-composed (not merely scaled down) so the LCD text stays
+   readable on a phone.
+   ========================================================================== */
+
+/* Slightly larger relative type on smaller desktop viewports. */
+@media (max-width: 1320px), (max-height: 840px) {
+  .device {
+    --device-w: min(1060px, 95vw, 124vh);
+    font-size: calc(var(--device-w) / 66);
+  }
+}
+
+/* ------------------------------------------------------------- stacked mode */
+
+@media (max-width: 980px) {
+  #root {
+    align-items: flex-start;
+    padding: 10px 8px 28px;
+  }
+
+  .device {
+    --device-w: min(520px, 92vw, 150vh);
+    width: var(--device-w);
+    font-size: calc(var(--device-w) / 25);
+    aspect-ratio: auto;
+  }
+
+  .device::after {
+    display: none;
+  }
+
+  .device__body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+  }
+
+  .half {
+    height: auto;
+  }
+
+  .half--left {
+    height: 50em;
+    clip-path: polygon(5% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 5%);
+  }
+
+  .half--left .half__face {
+    clip-path: polygon(4.8% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 4.8%);
+  }
+
+  .half--right {
+    height: 48em;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 95%, 95% 100%, 0% 100%);
+  }
+
+  .half--right .half__face {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 95.2%, 95.2% 100%, 0% 100%);
+  }
+
+  /* The fold becomes a horizontal barrel row between the two halves. */
+  .hinge {
+    flex-direction: row;
+    height: 2.4em;
+    padding: 0 4%;
+    background: linear-gradient(
+      180deg,
+      #4f080d 0%,
+      #7d1518 22%,
+      #9c2222 50%,
+      #7d1518 78%,
+      #4a070c 100%
+    );
+  }
+
+  .hinge__barrel {
+    width: auto;
+    height: 72%;
+    flex: 1 1 0;
+    margin: 0 0.12em;
+    background: linear-gradient(
+      180deg,
+      #3f060a 0%,
+      #9a1e21 18%,
+      #cf4a40 46%,
+      #a32124 70%,
+      #360509 100%
+    );
+  }
+
+  .half__face::before {
+    inset: 2.4% 2.6%;
+  }
+
+  /* --------------------------------------------------------- left half */
+
+  .lens-cluster {
+    left: 6%;
+    top: 1.2%;
+    width: 88%;
+    height: 10%;
+  }
+
+  .lamps {
+    gap: 1.5em;
+    padding-top: 4.5%;
+  }
+
+  .lamp__bulb {
+    width: 1em;
+    height: 1em;
+  }
+
+  .lamp__label {
+    font-size: 0.44em;
+  }
+
+  .brand {
+    padding-top: 4%;
+  }
+
+  .brand__title {
+    font-size: 0.6em;
+  }
+
+  .bezel--main {
+    left: 3.5%;
+    top: 12.5%;
+    width: 93%;
+    height: 55.5%;
+    padding: 0.95em;
+    border-radius: 0.8em;
+  }
+
+  .lcd--main {
+    padding: 0.6em 0.7em 0.7em;
+    gap: 0.45em;
+  }
+
+  /* Stack the reference layout: sprite + stats, then facts, then text.
+     Every row is content-sized so nothing can be squeezed out of the LCD. */
+  .main__data {
+    grid-template-columns: 34% 1fr;
+    grid-template-rows: auto auto auto auto;
+    gap: 0.45em 0.7em;
+    align-content: start;
+  }
+
+  .main__facts {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    grid-template-columns: 3.6em 1fr;
+    gap: 0.26em 0.5em;
+  }
+
+  .main__flavor {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+
+  .main__sprite-cell {
+    min-height: 0;
+    aspect-ratio: 1.05;
+  }
+
+  .main__header {
+    gap: 0.3em 0.45em;
+  }
+
+  .main__dexno {
+    font-size: 0.86em;
+  }
+
+  .main__caption {
+    font-size: 0.62em;
+  }
+
+  .main__status {
+    flex: 1 1 100%;
+    font-size: 0.6em;
+    padding: 0.28em 0.45em;
+  }
+
+  .tab {
+    font-size: 0.66em;
+    min-height: 2.8em;
+    padding: 0.44em 0.72em;
+  }
+
+  .main__name-text {
+    font-size: 1.3em;
+  }
+
+  .main__genus {
+    font-size: 0.68em;
+  }
+
+  .fact__key {
+    font-size: 0.7em;
+  }
+
+  .fact__value {
+    font-size: 0.78em;
+  }
+
+  .type-chip {
+    padding: 0.2em 0.55em;
+  }
+
+  .main__flavor {
+    font-size: 0.72em;
+    line-height: 1.38;
+  }
+
+  .stats-panel__title {
+    font-size: 0.68em;
+  }
+
+  .stat-row__label {
+    font-size: 0.68em;
+  }
+
+  .stat-row__value {
+    font-size: 0.7em;
+  }
+
+  .stat-row {
+    grid-template-columns: 4.6em 1fr 2.6em;
+  }
+
+  .main__stats {
+    grid-template-columns: 34% 1fr;
+  }
+
+  .control-deck {
+    left: 6%;
+    top: 69%;
+    width: 88%;
+    height: 19%;
+    grid-template-columns: 33% 1fr;
+    gap: 0.8em;
+  }
+
+  .control-deck__actions {
+    gap: 1.3em;
+  }
+
+  .action-row {
+    gap: 2em;
+  }
+
+  .action-row--wide {
+    gap: 1.3em;
+  }
+
+  .control-deck__side {
+    left: 36%;
+    bottom: 0.3em;
+    width: 18%;
+  }
+
+  .btn--pill {
+    min-width: 5.4em;
+    min-height: 2.4em;
+  }
+
+  .btn--yellow {
+    min-width: 6.2em;
+    min-height: 2.6em;
+  }
+
+  .btn__caption {
+    font-size: 0.62em;
+  }
+
+  .search-slot {
+    left: 5%;
+    top: 90%;
+    width: 90%;
+  }
+
+  .search-slot__input {
+    font-size: 0.68em;
+  }
+
+  .search-slot__tag {
+    font-size: 0.5em;
+  }
+
+  .btn--search {
+    font-size: 0.56em;
+  }
+
+  .tagline {
+    bottom: 1.2%;
+    font-size: 0.56em;
+  }
+
+  .screw--tl {
+    left: 3%;
+    top: 1.2%;
+  }
+
+  .screw--bl {
+    left: 3%;
+    bottom: 1.4%;
+  }
+
+  .screw--tr {
+    right: 2.6%;
+    top: 1.4%;
+  }
+
+  /* -------------------------------------------------------- right half */
+
+  .marquee {
+    left: 4%;
+    top: 1.6%;
+    width: 66%;
+    height: 7.6%;
+    padding: 0.4em 0.75em;
+  }
+
+  .marquee__line {
+    font-size: 0.5em;
+  }
+
+  .speaker {
+    right: 4%;
+    top: 1.8%;
+    width: 22%;
+    aspect-ratio: 1.5;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 0.18em;
+  }
+
+  .bezel--info {
+    left: 3.5%;
+    top: 8%;
+    width: 93%;
+    height: 50%;
+    padding: 0.7em;
+    border-radius: 0.8em;
+  }
+
+  .lcd--info {
+    padding: 0.4em 0.42em 0.36em;
+    gap: 0.3em;
+  }
+
+  .info__title,
+  .info__range {
+    font-size: 0.68em;
+  }
+
+  .info__bars span {
+    width: 0.3em;
+  }
+
+  .info__menu-item {
+    font-size: 0.82em;
+    min-height: 2.1em;
+    padding: 0.22em 0.42em;
+  }
+
+  .info__detail {
+    font-size: 0.78em;
+    line-height: 1.4;
+    padding: 0.34em 0.44em;
+  }
+
+  .info__body {
+    grid-template-columns: 42% 1fr;
+  }
+
+  .keypad {
+    left: 5%;
+    top: 61%;
+    width: 62%;
+    height: 19%;
+    gap: 0.4em;
+  }
+
+  .key {
+    font-size: 0.6em;
+    border-radius: 0.4em;
+  }
+
+  .key--utility {
+    font-size: 0.48em;
+  }
+
+  .confirm {
+    right: 6%;
+    top: 60%;
+    width: 25%;
+  }
+
+  .side-note {
+    right: 4%;
+    top: 83%;
+    width: 34%;
+    font-size: 0.5em;
+  }
+
+  .cartridge {
+    left: 3%;
+    right: 3%;
+    bottom: 2%;
+    height: 6.5%;
+    padding: 0 1em 0 1.6em;
+    gap: 0.6em;
+  }
+
+  .cartridge__label,
+  .cartridge__push {
+    font-size: 0.46em;
+  }
+
+  /* Index overlay: two columns of entries on stacked layouts. */
+  .index-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .index-overlay__title {
+    font-size: 0.62em;
+  }
+
+  .index-overlay__hint {
+    display: none;
+  }
+
+  .index-list__item {
+    font-size: 0.56em;
+  }
+}
+
+/* ---------------------------------------------------------- small phones */
+
+@media (max-width: 460px) {
+  .device {
+    --device-w: min(430px, 94vw);
+    font-size: calc(var(--device-w) / 24);
+  }
+
+  .half--left {
+    height: 51em;
+  }
+
+  .half--right {
+    height: 44em;
+  }
+
+  .index-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Landscape phones: keep the whole device visible. */
+@media (max-width: 980px) and (orientation: landscape) {
+  .device {
+    --device-w: min(560px, 70vw);
+    font-size: calc(var(--device-w) / 26);
+  }
+}

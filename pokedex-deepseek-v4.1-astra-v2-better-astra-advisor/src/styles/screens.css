@@ -1,0 +1,811 @@
+/* ==========================================================================
+   The two LCD screens and everything rendered on them.
+   Restrained retro electronic look: flat green panels, hard 1px rules,
+   heavy monospace type — no glassmorphism.
+   ========================================================================== */
+
+.lcd {
+  position: relative;
+  border-radius: 0.4em;
+  font-family: var(--font-lcd);
+  color: var(--lcd-ink);
+  overflow: hidden;
+  height: 100%;
+  isolation: isolate;
+}
+
+/* Faint scanlines + glass sheen shared by both displays. */
+.lcd::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.04) 26%,
+      rgba(0, 0, 0, 0.05) 100%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      rgba(24, 44, 20, 0.05) 0px,
+      rgba(24, 44, 20, 0.05) 1px,
+      rgba(255, 255, 255, 0) 1px,
+      rgba(255, 255, 255, 0) 3px
+    );
+  z-index: 3;
+}
+
+.lcd--main {
+  background: linear-gradient(170deg, var(--lcd-bg) 0%, var(--lcd-bg-2) 100%);
+  box-shadow:
+    inset 0 0 0 0.15em var(--lcd-line),
+    inset 0 0.25em 0.5em rgba(38, 62, 30, 0.32),
+    inset 0 -0.15em 0.3em rgba(38, 62, 30, 0.18);
+  padding: 0.45em 0.55em 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+
+.lcd--info {
+  background: linear-gradient(170deg, var(--lcd2-bg) 0%, #97b47c 100%);
+  box-shadow:
+    inset 0 0 0 0.14em #6d8a5b,
+    inset 0 0.22em 0.45em rgba(38, 62, 30, 0.34);
+  padding: 0.34em 0.36em 0.3em;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 0.28em;
+}
+
+/* ------------------------------------------------------------ main header */
+
+.main__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em 0.5em;
+  border-bottom: 0.09em solid var(--lcd-line);
+  padding-bottom: 0.28em;
+}
+
+.main__dexno {
+  font-size: 0.82em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.main__caption {
+  font-size: 0.6em;
+  letter-spacing: 0.22em;
+  color: var(--lcd-ink-soft);
+}
+
+.main__tabs {
+  order: 2;
+  margin-left: auto;
+  display: flex;
+  gap: 0.28em;
+}
+
+.tab {
+  border: 0.09em solid var(--lcd-line);
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--lcd-ink-soft);
+  font-family: var(--font-lcd);
+  font-size: 0.56em;
+  letter-spacing: 0.14em;
+  padding: 0.34em 0.6em;
+  border-radius: 0.25em;
+  cursor: pointer;
+  transition:
+    background var(--speed-fast) linear,
+    color var(--speed-fast) linear;
+}
+
+.tab[aria-selected="true"] {
+  background: var(--lcd-ink);
+  color: var(--lcd-bg);
+  border-color: var(--lcd-ink);
+}
+
+.tab:hover:not([aria-selected="true"]) {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.main__status {
+  order: 3;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.54em;
+  letter-spacing: 0.12em;
+  padding: 0.3em 0.5em;
+  border-radius: 0.2em;
+  border: 0.09em solid currentColor;
+  color: var(--lcd-ink-soft);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.main__status[data-tone="busy"] {
+  animation: status-pulse 1.1s ease-in-out infinite;
+}
+
+.main__status[data-tone="error"] {
+  color: #6d1a12;
+  border-color: #6d1a12;
+  background: rgba(160, 40, 24, 0.14);
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* -------------------------------------------------------------- main body */
+
+.main__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  display: grid;
+  animation: screen-in var(--speed-med) var(--ease-press) both;
+}
+
+/* Inline notice shown when a refresh fails but stale data is still on screen. */
+.main__alert {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin: 0;
+  border: 0.09em solid #6d1a12;
+  background: rgba(160, 40, 24, 0.16);
+  color: #5f1610;
+  border-radius: 0.24em;
+  padding: 0.24em 0.4em;
+  font-size: 0.56em;
+  letter-spacing: 0.1em;
+}
+
+.main__alert span {
+  flex: 1;
+  min-width: 0;
+}
+
+.main__alert .lcd-action {
+  border-color: #6d1a12;
+  background: #6d1a12;
+  color: var(--lcd-bg);
+  padding: 0.3em 0.7em;
+  font-size: 1em;
+}
+
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    translate: 0 0.25em;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.main__data {
+  display: grid;
+  grid-template-columns: 44% 1fr;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.45em 0.8em;
+  min-height: 0;
+}
+
+.main__name {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  min-width: 0;
+}
+
+.main__name-text {
+  font-size: 1.14em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.main__genus {
+  font-size: 0.6em;
+  letter-spacing: 0.14em;
+  color: var(--lcd-ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.main__sprite-cell {
+  position: relative;
+  grid-column: 1;
+  grid-row: 2;
+  display: grid;
+  place-items: center;
+  border: 0.09em solid var(--lcd-line-soft);
+  border-radius: 0.3em;
+  background:
+    radial-gradient(circle at 50% 62%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 62%),
+    rgba(120, 150, 100, 0.16);
+  padding: 0.35em;
+  min-height: 6em;
+}
+
+.main__sprite {
+  /* Absolutely positioned so the percentage box is always definite. */
+  position: absolute;
+  top: 0.35em;
+  left: 0.35em;
+  width: calc(100% - 0.7em);
+  height: calc(100% - 0.7em);
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: saturate(0.92) contrast(1.06) drop-shadow(0 0.12em 0.1em rgba(30, 50, 24, 0.35));
+}
+
+.main__sprite--missing {
+  display: grid;
+  place-items: center;
+  padding: 0.4em;
+  font-size: 0.6em;
+  letter-spacing: 0.14em;
+  color: var(--lcd-ink-soft);
+  text-align: center;
+}
+
+.main__facts {
+  grid-column: 1;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: 3.4em 1fr;
+  align-content: start;
+  gap: 0.3em 0.5em;
+  min-width: 0;
+}
+
+.fact__key {
+  font-size: 0.62em;
+  letter-spacing: 0.16em;
+  color: var(--lcd-ink-soft);
+  padding-top: 0.15em;
+}
+
+.fact__value {
+  font-size: 0.7em;
+  letter-spacing: 0.06em;
+  min-width: 0;
+}
+
+.type-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+}
+
+.type-chip {
+  border: 0.09em solid var(--lcd-ink);
+  background: var(--lcd-ink);
+  color: var(--lcd-bg);
+  border-radius: 0.22em;
+  padding: 0.16em 0.5em;
+  font-size: 0.94em;
+  letter-spacing: 0.16em;
+}
+
+.ability-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.14em;
+}
+
+.main__flavor {
+  grid-column: 2;
+  grid-row: 3;
+  border: 0.09em solid var(--lcd-line);
+  border-radius: 0.28em;
+  padding: 0.45em 0.6em;
+  font-size: 0.68em;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+  min-height: 0;
+}
+
+.main__flavor p {
+  margin: 0;
+}
+
+/* -------------------------------------------------------------- stats view */
+
+.main__stats {
+  display: grid;
+  grid-template-columns: 30% 1fr;
+  gap: 0.7em;
+  min-height: 0;
+}
+
+.stats-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  min-width: 0;
+}
+
+.stats-panel--compact {
+  grid-column: 2;
+  grid-row: 2;
+  justify-content: center;
+  gap: 0.42em;
+}
+
+.stats-panel__title {
+  font-size: 0.58em;
+  letter-spacing: 0.2em;
+  color: var(--lcd-ink-soft);
+  border-bottom: 0.09em solid var(--lcd-line);
+  padding-bottom: 0.2em;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 4.2em 1fr 2.4em;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.stat-row__label {
+  font-size: 0.6em;
+  letter-spacing: 0.12em;
+  color: var(--lcd-ink-soft);
+}
+
+.stat-row__track {
+  height: 0.78em;
+  border: 0.09em solid var(--lcd-line);
+  border-radius: 0.15em;
+  background: rgba(255, 255, 255, 0.22);
+  overflow: hidden;
+}
+
+.stat-row__fill {
+  /* Must be a block: an inline span ignores its percentage width. */
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #4b6a3a 0%, var(--lcd-ink) 100%);
+  transform-origin: left center;
+  animation: bar-grow var(--speed-slow) var(--ease-press) both;
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.stat-row__value {
+  font-size: 0.62em;
+  text-align: right;
+  letter-spacing: 0.06em;
+}
+
+.stat-row--total {
+  margin-top: auto;
+  border-top: 0.09em solid var(--lcd-line);
+  padding-top: 0.3em;
+}
+
+.stat-row--total .stat-row__label,
+.stat-row--total .stat-row__value {
+  font-weight: 700;
+  color: var(--lcd-ink);
+}
+
+/* --------------------------------------------------- status / error panel */
+
+.screen-message {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.7em;
+  text-align: center;
+  height: 100%;
+  padding: 1em;
+}
+
+.screen-message__title {
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.screen-message__body {
+  font-size: 0.66em;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  color: var(--lcd-ink-soft);
+  max-width: 26em;
+}
+
+.screen-message--error .screen-message__title {
+  color: #6d1a12;
+}
+
+.scan-bars {
+  display: flex;
+  gap: 0.3em;
+  align-items: flex-end;
+  height: 1.6em;
+}
+
+.scan-bars__bar {
+  width: 0.42em;
+  background: var(--lcd-ink);
+  border-radius: 0.1em;
+  animation: scan-bounce 900ms ease-in-out infinite;
+}
+
+.scan-bars__bar:nth-child(1) {
+  animation-delay: 0ms;
+}
+.scan-bars__bar:nth-child(2) {
+  animation-delay: 120ms;
+}
+.scan-bars__bar:nth-child(3) {
+  animation-delay: 240ms;
+}
+.scan-bars__bar:nth-child(4) {
+  animation-delay: 360ms;
+}
+
+@keyframes scan-bounce {
+  0%,
+  100% {
+    height: 30%;
+    opacity: 0.5;
+  }
+  50% {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+/* Retry / action button rendered on the LCD. */
+.lcd-action {
+  border: 0.09em solid var(--lcd-ink);
+  background: var(--lcd-ink);
+  color: var(--lcd-bg);
+  font-family: var(--font-lcd);
+  font-size: 0.66em;
+  letter-spacing: 0.16em;
+  padding: 0.5em 1.1em;
+  border-radius: 0.25em;
+  cursor: pointer;
+  transition: filter var(--speed-fast) linear;
+}
+
+.lcd-action:hover {
+  filter: brightness(1.25);
+}
+
+/* Navigation-in-progress overlay: keeps stale content visible. */
+.lcd__scan-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(183, 207, 162, 0) 0%,
+    rgba(183, 207, 162, 0.55) 48%,
+    rgba(183, 207, 162, 0) 100%
+  );
+  animation: scan-sweep 1.15s linear infinite;
+  opacity: 0.55;
+}
+
+@keyframes scan-sweep {
+  from {
+    translate: 0 -100%;
+  }
+  to {
+    translate: 0 100%;
+  }
+}
+
+/* ================================================================= info LCD */
+
+.info__header {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  border-bottom: 0.09em solid var(--lcd-line);
+  padding-bottom: 0.2em;
+}
+
+.info__title {
+  font-size: 0.56em;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+}
+
+.info__range {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  font-size: 0.52em;
+  letter-spacing: 0.16em;
+}
+
+.info__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.13em;
+  height: 0.9em;
+}
+
+.info__bars span {
+  width: 0.22em;
+  background: var(--lcd2-ink);
+  border-radius: 0.05em;
+}
+
+.info__bars span[data-off="true"] {
+  background: rgba(34, 55, 28, 0.25);
+}
+
+.info__body {
+  display: grid;
+  grid-template-columns: 45% 1fr;
+  gap: 0.3em;
+  min-height: 0;
+}
+
+.info__map {
+  position: relative;
+  border: 0.09em solid var(--lcd-line);
+  border-radius: 0.2em;
+  background: rgba(255, 255, 255, 0.24);
+  padding: 0.2em;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 0.09em;
+  min-height: 0;
+}
+
+.info__map-cell {
+  background: rgba(120, 152, 96, 0.28);
+  border-radius: 0.05em;
+}
+
+.info__map-cell[data-land="true"] {
+  background: rgba(58, 88, 44, 0.72);
+}
+
+.info__map-marker {
+  position: absolute;
+  width: 0.62em;
+  height: 0.62em;
+  translate: -50% -50%;
+  border-radius: 0.1em;
+  background: #d8f0c0;
+  border: 0.1em solid var(--lcd2-ink);
+  box-shadow: 0 0 0.4em rgba(216, 240, 192, 0.9);
+  animation: marker-ping 1.6s ease-in-out infinite;
+}
+
+@keyframes marker-ping {
+  0%,
+  100% {
+    box-shadow: 0 0 0.3em rgba(216, 240, 192, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0.75em rgba(216, 240, 192, 1);
+  }
+}
+
+.info__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.16em;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.info__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.28em;
+  border: 0.09em solid rgba(58, 78, 44, 0.45);
+  background: var(--lcd2-cell);
+  color: var(--lcd2-cell-ink);
+  border-radius: 0.14em;
+  padding: 0.18em 0.36em;
+  font-family: var(--font-lcd);
+  font-size: 0.55em;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background var(--speed-fast) linear,
+    color var(--speed-fast) linear;
+}
+
+.info__menu-item[aria-pressed="true"] {
+  background: var(--lcd2-ink);
+  color: var(--lcd2-cell);
+  border-color: var(--lcd2-ink);
+}
+
+.info__menu-cursor {
+  width: 0.6em;
+  flex: none;
+  opacity: 0;
+}
+
+.info__menu-item[aria-pressed="true"] .info__menu-cursor {
+  opacity: 1;
+}
+
+.info__detail {
+  border: 0.09em solid var(--lcd-line);
+  border-radius: 0.2em;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.3em 0.4em;
+  font-size: 0.55em;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.info__detail-title {
+  display: block;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.2em;
+}
+
+.info__detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+
+.info__detail-row span:last-child {
+  text-align: right;
+}
+
+.info__detail-note {
+  color: rgba(34, 55, 28, 0.72);
+}
+
+.info__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.28em;
+}
+
+.info__dot {
+  width: 0.34em;
+  height: 0.34em;
+  border-radius: 50%;
+  background: rgba(34, 55, 28, 0.28);
+}
+
+.info__dot[data-active="true"] {
+  background: var(--lcd2-ink);
+}
+
+/* ============================================================ index overlay */
+
+.index-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: linear-gradient(170deg, #b9d0a4 0%, #a4bf8b 100%);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.4em;
+  padding: 0.5em 0.6em;
+  animation: screen-in var(--speed-med) var(--ease-press) both;
+}
+
+.index-overlay__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  border-bottom: 0.09em solid var(--lcd-line);
+  padding-bottom: 0.3em;
+}
+
+.index-overlay__title {
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.index-overlay__hint {
+  margin-left: auto;
+  font-size: 0.54em;
+  letter-spacing: 0.14em;
+  color: var(--lcd-ink-soft);
+}
+
+.index-overlay__error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+
+.index-list {
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.22em 0.6em;
+  align-content: start;
+  padding-right: 0.3em;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lcd-line) transparent;
+}
+
+.index-list__item {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  border: 0.09em solid transparent;
+  background: transparent;
+  color: var(--lcd-ink);
+  font-family: var(--font-lcd);
+  font-size: 0.6em;
+  letter-spacing: 0.06em;
+  padding: 0.24em 0.35em;
+  border-radius: 0.18em;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--speed-fast) linear;
+}
+
+.index-list__item:hover {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.index-list__item[aria-current="true"] {
+  background: var(--lcd-ink);
+  color: var(--lcd-bg);
+}
+
+.index-list__no {
+  flex: none;
+  color: inherit;
+  opacity: 0.75;
+}
+
+.index-list__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

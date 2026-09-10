@@ -1,10 +1,10 @@
 # Pokédex benchmark
 
-**GPT-6 Astra was fastest and is the benchmark author's visual favorite. Astra + DeepSeek produced the strongest code.** All three worked in ordinary use, and all three still need robustness fixes.
+**GPT-6 Astra was fastest. DeepSeek → GPT-6 Astra is the author's visual favorite among the mixed workflows. GPT-6 Astra → DeepSeek produced the strongest code among the published mixed runs.** All four worked in ordinary use and still need robustness fixes.
 
-[**Try all three Pokédex apps in your browser**](https://kevinkern.dev/benchmarks/pokedex). Switch between models and explore the working apps.
+[**Try all four Pokédex apps in your browser**](https://kevinkern.dev/benchmarks/pokedex). Switch between models and explore the working apps.
 
-Three implementations of the same task, reviewed independently by Fable 5.1 and Codex. Build a physical red Pokédex with real [PokéAPI](https://pokeapi.co/) data, the original 151 Pokémon, search, keyboard navigation, caching, and a usable mobile layout.
+Four implementations of the same task. Fable 5.1 and Codex reviewed the original three; Codex also reviewed the DeepSeek-led run with Astra advising. Build a physical red Pokédex with real [PokéAPI](https://pokeapi.co/) data, the original 151 Pokémon, search, keyboard navigation, caching, and a usable mobile layout.
 
 ## Original reference
 
@@ -27,7 +27,7 @@ The app worked in ordinary use, but too much behavior and presentation lives in 
 
 </details>
 
-## GPT-6 Astra + DeepSeek V4.1 Flash
+## GPT-6 Astra → DeepSeek V4.1 Flash
 
 GPT-6 Astra (`gpt-6-astra`, medium reasoning) led the work in Codex Desktop. DeepSeek V4.1 Flash (`deepseek-flash`, max reasoning) implemented the app and a repair pass through DeepSeek Harness. Astra supplied the architecture, reviewed the result, and made final corrections.
 
@@ -38,9 +38,26 @@ GPT-6 Astra (`gpt-6-astra`, medium reasoning) led the work in Codex Desktop. Dee
 This implementation has clearer state and data boundaries, although the additional robustness probes still found cache defects.
 
 <details>
-<summary>GPT-6 Astra + DeepSeek V4.1 Flash on mobile</summary>
+<summary>GPT-6 Astra → DeepSeek V4.1 Flash on mobile</summary>
 
 <img src="assets/astra-deepseek-mobile.png" alt="GPT-6 Astra and DeepSeek V4.1 Flash full mobile page" width="390">
+
+</details>
+
+## DeepSeek V4.1 Flash → GPT-6 Astra
+
+DeepSeek V4.1 Flash (`deepseek-flash`, max reasoning) led the work in DeepSeek Harness and handled implementation and repairs. GPT-6 Astra (`gpt-6-astra`, medium reasoning) advised and reviewed through Codex CLI, with three reviews and two repair cycles.
+
+![DeepSeek-led app with GPT-6 Astra advising, desktop result](assets/deepseek-astra-desktop.png)
+
+**The author's visual favorite among the mixed workflows.**
+
+Ordinary workflows passed. Independent failure tests found persistent malformed-data crashes, retry and search issues, and a missing fallback for failed sprite images. The [live comparison](https://kevinkern.dev/benchmarks/pokedex/#numbers-title) includes the full results table.
+
+<details>
+<summary>DeepSeek V4.1 Flash → GPT-6 Astra on mobile</summary>
+
+<img src="assets/deepseek-astra-mobile.png" alt="DeepSeek-led app with GPT-6 Astra advising, full mobile page" width="390">
 
 </details>
 
@@ -66,7 +83,8 @@ Desktop screenshots show the initial Bulbasaur screen at 1440 × 900. Mobile scr
 Use Node.js 22.12 or newer. Choose one project folder, then run the same commands.
 
 - [GPT-6 Astra](pokedex-astra)
-- [GPT-6 Astra + DeepSeek V4.1 Flash](pokedex-deepseek-v4.1-astra)
+- [GPT-6 Astra → DeepSeek V4.1 Flash](pokedex-deepseek-v4.1-astra)
+- [DeepSeek V4.1 Flash → GPT-6 Astra](pokedex-deepseek-v4.1-astra-v2-better-astra-advisor)
 - [DeepSeek V4.1 Flash](pokedex-deepseek-v4.1-harness)
 
 ```bash
@@ -81,6 +99,6 @@ npm test
 npm run build
 ```
 
-The application source is unchanged. This repository contains the three projects, this summary, and comparison images. Raw transcripts, logs, private measurement records, generated builds, and temporary evaluation files stay out of Git.
+The application source is unchanged. This repository contains the four projects, this summary, and comparison images. Raw transcripts, logs, private measurement records, generated builds, and temporary evaluation files stay out of Git.
 
 This is one task with one submitted attempt per run. Model and harness names come from the recorded execution configurations. The reviews are independent, although visible folder names compromised blinding. The results describe these submissions and do not establish a general model ranking.
