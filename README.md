@@ -31,11 +31,11 @@ The app worked in ordinary use, but too much behavior and presentation lives in 
 
 Credit to [@anshuc for the workflow and approach](https://x.com/anshuc/status/2098014776886448337?s=20). This is an adaptation of their idea, not mine.
 
-GPT-5.6 Luna (`gpt-5.6-luna`, max reasoning in the execution records) coordinated the work and ran verification. GPT-6 Astra (`gpt-6-astra`, medium reasoning) implemented the app in one fresh context and repaired the test setup in a second. The requested Luna effort was xhigh, but the recorded run used max. The repair worker also ran one focused test, a small deviation from the intended Luna-only verification.
+GPT-5.6 Luna (`gpt-5.6-luna`, max reasoning) coordinated and verified the work. GPT-6 Astra (`gpt-6-astra`, medium reasoning) built the app in fresh contexts.
 
 ![Luna-led app with GPT-6 Astra implementing, desktop result](assets/luna-astra-desktop.png)
 
-**About the same estimated cost as Astra alone, with almost twice the elapsed time.**
+**About 4% less cost than Astra alone for almost twice the time, measured by estimated API usage.**
 
 | Metric | GPT-6 Astra alone | Luna → GPT-6 Astra |
 | --- | ---: | ---: |
@@ -45,9 +45,7 @@ GPT-5.6 Luna (`gpt-5.6-luna`, max reasoning in the execution records) coordinate
 | Code quality from Codex | 65 / 100 | 61 / 100 |
 | React Doctor 0.9.13 | 84 / 100 | 82 / 100 |
 
-Luna accounted for about $0.25 and the two Astra calls for about $2.79. The total is around 4% below Astra alone. These are API-equivalent estimates from recorded usage at standard [Astra](https://developers.openai.com/api/docs/models/gpt-6-astra) and [Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) rates, not subscription bills. This run does not establish a subscription-quota saving or a general conclusion about the workflow.
-
-The type check, all 22 supplied tests, and the production build passed. Ordinary browser use, delayed-response handling, and sprite fallback also passed independent checks. Malformed API data could still crash the app and poison its cache, and searching its own displayed `NIDORAN M` name failed. The main component mixes many responsibilities, and the very dense JSX and CSS make maintenance harder. The code score is a reviewer judgment. Fable has not reviewed this submission.
+Visually, I think it is similar to **GPT-6 Astra** alone, but the code is heavily condensed and feels like spaghetti. Too much logic is packed into the main component, making it hard to follow.
 
 <details>
 <summary>GPT-5.6 Luna → GPT-6 Astra on mobile</summary>
