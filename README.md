@@ -63,7 +63,7 @@ Desktop screenshots show the initial Bulbasaur screen at 1440 × 900. Mobile scr
 
 ## What I found
 
-Here’s my honest take. **Astra** gave me the best overall result in this benchmark, and it finished fastest. After trying all three apps myself, it’s the one I prefer.
+**Astra** gave me the best overall result in this benchmark, and it finished fastest. After trying all three apps myself, it’s the one I prefer.
 
 There is just one thing. If you want clear abstractions and code that humans can maintain, you still need to look closely. Both reviewers ranked Astra’s code below the other two in this benchmark. Too much sits in [one component](https://github.com/regenrek/pokedex-bench/blob/54158dd0196eb7e2bc700d1bab5f8272c1ca5771/pokedex-astra/src/App.tsx#L8-L373), and the CSS has [repeated layout fixes](https://github.com/regenrek/pokedex-bench/blob/54158dd0196eb7e2bc700d1bab5f8272c1ca5771/pokedex-astra/src/styles.css#L1681-L1863) that make it harder to follow.
 
