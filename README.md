@@ -16,7 +16,7 @@ GPT-6 Astra (`gpt-6-astra`) worked alone in Codex Desktop with medium reasoning 
 
 ![GPT-6 Astra desktop result](assets/astra-desktop.png)
 
-**Fastest prototype and fewest observed tokens.** Finished in 8m 08s with 1.33 million observed workflow tokens. All 26 supplied tests passed. Code scores were 57 from Fable and 65 from Codex.
+**Fastest prototype and fewest recorded tokens.**
 
 The app worked in ordinary use, but too much behavior and presentation lives in one component.
 
@@ -33,7 +33,7 @@ GPT-6 Astra (`gpt-6-astra`, medium reasoning) led the work in Codex Desktop. Dee
 
 ![GPT-6 Astra and DeepSeek V4.1 Flash desktop result](assets/astra-deepseek-desktop.png)
 
-**Strongest code and the best starting point for a maintained app.** Finished in 32m 39s with at least 33.76 million observed workflow tokens across both models. All 52 supplied tests passed. Code scores were 86 from Fable and 80 from Codex.
+**Strongest code and the best starting point for a maintained app.**
 
 This implementation has clearer state and data boundaries, although the additional robustness probes still found cache defects.
 
@@ -50,8 +50,6 @@ DeepSeek V4.1 Flash (`deepseek-flash`) worked alone in DeepSeek Harness with max
 
 ![DeepSeek V4.1 Flash desktop result](assets/deepseek-desktop.png)
 
-Finished in 23m 27s with at least 27.43 million observed workflow tokens. All 95 supplied tests passed. Code scores were 66 from Fable and 69 from Codex.
-
 The code has useful separation but more confirmed interaction bugs, including a late retry replacing the selected Pokémon and male Nidoran resolving to the female entry.
 
 <details>
@@ -63,19 +61,34 @@ The code has useful separation but more confirmed interaction bugs, including a 
 
 Desktop screenshots show the initial Bulbasaur screen at 1440 × 900. Mobile screenshots show full pages captured at a 390 × 844 viewport. Each app scrolls vertically.
 
-## Reading the results
+## What I found
 
-Code scores are out of 100 and reflect reviewer judgment. Visual preference is the benchmark author's assessment. The screenshots let readers judge the designs for themselves. Token totals include cached input, output, and observed worker usage. They include the original completion reports but exclude later accounting work. Some retry usage is missing for the two DeepSeek configurations. Monetary cost is unknown for all three, and recorded time is not time to a fully accepted product.
+Here’s my honest take. Astra gave me the best overall result in this benchmark, and it finished fastest. After trying all three apps myself, it’s the one I prefer.
 
-## Why the reviews differ
+There is just one thing. If you want clear abstractions and code that humans can maintain, you still need to look closely. Both reviewers ranked Astra’s code below the other two in this benchmark. Too much sits in one component, and the CSS has repeated layout fixes that make it harder to follow.
 
-Both reviewers installed, tested, built, and drove the apps in a browser. Normal search, navigation, caching, and recovery from an HTTP 503 worked across all three.
+Astra + DeepSeek did better here. Loading data, keeping track of the selected Pokémon, and drawing the interface are more clearly separated. It’s the codebase I would rather maintain. But it took about four times as long and used about 25 times as many recorded tokens as Astra alone.
 
-Fable passed the functional gate and ranked GPT-6 Astra first overall because speed and token use outweighed its weaker code. Codex added malformed-response and cache-race probes. A deliberately malformed species response crashed every app and remained cached after reload. Codex therefore withheld overall acceptance. This was an injected fault, not something observed from normal live PokéAPI responses. Additional probes also found defects in the Astra + DeepSeek implementation, so Fable's initial finding of no reproduced bugs in that implementation is incomplete.
+DeepSeek alone also split the code into smaller parts, but those parts did not always work together correctly. A delayed retry could replace the Pokémon you had just selected. Some CSS names did not match the components, so the indicator lights looked wrong. More structure did not automatically mean fewer bugs.
 
-The useful middle ground is to show ordinary functionality and robustness separately, retain both reviewers' scores, and name the category leaders. Averaging everything into one winner would hide the acceptance disagreement. Both reviewers agree on the code ranking.
+For me, Astra wins on the finished result. Astra + DeepSeek wins on code quality. If the code needs to stay understandable over time, I would make that part of the brief and keep code review and QA in the process. This is one benchmark, not a verdict on everything these models can do.
 
-Fable counted 1.26 million tokens for Astra alone and 33.30 million for Astra + DeepSeek. The totals above include their final completion reports, which explains the difference. The standalone DeepSeek total agrees.
+## The numbers
+
+| Metric | GPT-6 Astra | Astra + DeepSeek V4.1 Flash | DeepSeek V4.1 Flash |
+| --- | --- | --- | --- |
+| Time to finish | 8m 08s | 32m 39s | 23m 27s |
+| Recorded tokens | 1.33 million | At least 33.76 million | At least 27.43 million |
+| Code quality from Fable 5.1 | 57 / 100 | 86 / 100 | 66 / 100 |
+| Code quality from Codex | 65 / 100 | 80 / 100 | 69 / 100 |
+| Normal search and navigation | Worked | Worked | Worked |
+| Additional error checks | Needs fixes | Needs fixes | Needs fixes |
+
+The code scores are the reviewers’ judgments. My preference after trying the apps is separate from those scores. The recorded time ends at final verification, before any fixes suggested by the independent reviews.
+
+Tokens include input, cached input, output, and work from other agents. Some retry usage is missing for the DeepSeek runs. Dollar costs are unknown, so fewer tokens does not prove a lower bill.
+
+All three worked in ordinary use. In an extra test, each app received API data in an unexpected format. All three crashed and were still broken after a reload because they had saved the bad data. This was a test we deliberately set up, not something observed from normal PokéAPI responses. The supplied tests did not catch it.
 
 ## Run locally
 
