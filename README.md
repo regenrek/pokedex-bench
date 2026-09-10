@@ -2,6 +2,8 @@
 
 **GPT-6 Astra was fastest and is the benchmark author's visual favorite. Astra + DeepSeek produced the strongest code.** All three worked in ordinary use, and all three still need robustness fixes.
 
+[**Try all three Pokédex apps in your browser**](https://kevinkern.dev/benchmarks/pokedex). Switch between models and explore the working apps.
+
 Three implementations of the same task, reviewed independently by Fable 5.1 and Codex. Build a physical red Pokédex with real [PokéAPI](https://pokeapi.co/) data, the original 151 Pokémon, search, keyboard navigation, caching, and a usable mobile layout.
 
 ## Original reference
