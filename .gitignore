@@ -114,3 +114,15 @@
 !/pokedex-luna-astra/vitest.config.ts
 !/assets/luna-astra-desktop.png
 !/assets/luna-astra-mobile.png
+
+!/pokedex-sol-astra/
+/pokedex-sol-astra/*
+!/pokedex-sol-astra/src/
+!/pokedex-sol-astra/public/
+!/pokedex-sol-astra/index.html
+!/pokedex-sol-astra/package.json
+!/pokedex-sol-astra/package-lock.json
+!/pokedex-sol-astra/tsconfig*.json
+!/pokedex-sol-astra/vite.config.ts
+!/assets/sol-desktop.png
+!/assets/sol-mobile.png

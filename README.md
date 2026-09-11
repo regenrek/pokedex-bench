@@ -1,10 +1,10 @@
 # Pokédex benchmark
 
-**GPT-6 Astra was fastest. DeepSeek → GPT-6 Astra is the author's visual favorite among the mixed workflows. GPT-6 Astra → DeepSeek produced the strongest code among the published mixed runs.** All five worked in ordinary use and still need robustness fixes.
+**GPT-6 Astra was fastest. DeepSeek → GPT-6 Astra is the author's visual favorite among the mixed workflows. GPT-6 Astra → DeepSeek produced the strongest code among the published mixed runs.** All six worked in ordinary use and still need robustness fixes.
 
-[**Try all five Pokédex apps in your browser**](https://kevinkern.dev/benchmarks/pokedex). Switch between models and explore the working apps.
+[**Try all six Pokédex apps in your browser**](https://kevinkern.dev/benchmarks/pokedex). Switch between models and explore the working apps.
 
-Five implementations of the same task. Fable 5.1 and Codex reviewed the original three; Codex also reviewed the DeepSeek-led run with Astra advising and the Luna-led run with Astra implementing. Build a physical red Pokédex with real [PokéAPI](https://pokeapi.co/) data, the original 151 Pokémon, search, keyboard navigation, caching, and a usable mobile layout.
+Six implementations of the same task. Fable 5.1 and Codex reviewed the original three; Codex also reviewed the DeepSeek-led run with Astra advising the Luna-led run with Astra implementing, and Sol alone. Build a physical red Pokédex with real [PokéAPI](https://pokeapi.co/) data, the original 151 Pokémon, search, keyboard navigation, caching, and a usable mobile layout.
 
 ## Original reference
 
@@ -24,6 +24,25 @@ The app worked in ordinary use, but too much behavior and presentation lives in 
 <summary>GPT-6 Astra on mobile</summary>
 
 <img src="assets/astra-mobile.png" alt="GPT-6 Astra full mobile page" width="390">
+
+</details>
+
+## Sol 5.6
+
+GPT-5.6 Sol (`gpt-5.6-sol`, medium reasoning) built and verified the app alone. No Astra advisor was used.
+
+![Sol 5.6 desktop result](assets/sol-desktop.png)
+
+**A convincing desktop recreation, with some mobile layout and cache issues.**
+
+The run took 13m 42s and used 4.45 million recorded tokens, with an estimated standard API cost of $2.98. Codex rated the code 66 / 100 and React Doctor 0.9.13 scored it 62 / 100. Fable has not reviewed this run.
+
+All 17 supplied tests, type checking, and the build passed. Ordinary browser use worked, but malformed cached data could cause persistent crashes. On mobile, some labels truncate and the lower controls overlap the speaker slots.
+
+<details>
+<summary>Sol 5.6 on mobile</summary>
+
+<img src="assets/sol-mobile.png" alt="Sol 5.6 full mobile page" width="390">
 
 </details>
 
@@ -110,6 +129,7 @@ Desktop screenshots show the initial Bulbasaur screen at a 1440 × 900 viewport,
 Use Node.js 22.12 or newer. Choose one project folder, then run the same commands.
 
 - [GPT-6 Astra](pokedex-astra)
+- [Sol 5.6](pokedex-sol-astra)
 - [GPT-5.6 Luna → GPT-6 Astra](pokedex-luna-astra)
 - [GPT-6 Astra → DeepSeek V4.1 Flash](pokedex-deepseek-v4.1-astra)
 - [DeepSeek V4.1 Flash → GPT-6 Astra](pokedex-deepseek-v4.1-astra-v2-better-astra-advisor)
@@ -127,6 +147,6 @@ npm test
 npm run build
 ```
 
-The application source is unchanged. This repository contains the five projects, this summary, and comparison images. Raw transcripts, logs, private measurement records, generated builds, and temporary evaluation files stay out of Git.
+The application source is unchanged. This repository contains the six projects, this summary, and comparison images. Raw transcripts, logs, private measurement records, generated builds, and temporary evaluation files stay out of Git.
 
 This is one task with one submitted attempt per run. Model and harness names come from the recorded execution configurations. The reviews are independent, although visible folder names compromised blinding. The results describe these submissions and do not establish a general model ranking.
